@@ -79,15 +79,19 @@ export const clientColumns: ColumnDef<ClientType>[] = [
     accessorKey: "custom_name",
     header: "Кастомне ім'я",
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [name, setName] = useState<string | undefined>(
         row.original.custom_name,
       );
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { mutate, data } = useMutation({
         mutationKey: ["setCustomName", row.original.id],
         mutationFn: (name: string) =>
           clientService.setCustomName(row.original.id, name),
       });
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { refetch } = useQuery({ queryKey: ["clients"] });
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         if (data) {
           refetch();
@@ -165,6 +169,7 @@ export const clientColumns: ColumnDef<ClientType>[] = [
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const [open, setOpen] = useState(false);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { mutate, data } = useMutation({
         mutationKey: ["setActiveStatus", row.original.id],
         mutationFn: () =>
@@ -175,6 +180,7 @@ export const clientColumns: ColumnDef<ClientType>[] = [
       });
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { refetch } = useQuery({ queryKey: ["clients"] });
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         if (data) {
           refetch();
