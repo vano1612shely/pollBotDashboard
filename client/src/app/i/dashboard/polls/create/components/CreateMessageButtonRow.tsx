@@ -24,7 +24,7 @@ import {
   UseFormReturn,
 } from "react-hook-form";
 import CreateMessageButton from "@/app/i/dashboard/polls/create/components/CreateMessageButton";
-
+import { FormValues } from "@/app/i/dashboard/polls/create/components/messageSchema";
 export default function CreateMessageButtonRow({
   form,
   field,
