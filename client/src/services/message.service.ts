@@ -9,19 +9,8 @@ class MessageService {
     const res = await api.post(`/messages`, data);
     return res.data;
   }
-  async getByType(
-    type: MessageType,
-    per_page?: number | null,
-    page?: number | null,
-    search?: string | null,
-  ): Promise<{ count: number; data: Message[] }> {
-    const res = await api.get(`/messages/byType/${type}`, {
-      params: {
-        per_page: per_page,
-        page: page,
-        search: search,
-      },
-    });
+  async getByType(type: MessageType): Promise<Message[]> {
+    const res = await api.get(`/messages/byType/${type}`);
     return res.data;
   }
   async getAll(
