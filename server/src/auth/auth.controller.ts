@@ -32,6 +32,7 @@ export class AuthController {
     return { access_token: token };
   }
 
+  @Public()
   @Post('/create')
   @UsePipes(new ValidationPipe({ transform: true }))
   async createUser(@Body() data: LoginDto) {

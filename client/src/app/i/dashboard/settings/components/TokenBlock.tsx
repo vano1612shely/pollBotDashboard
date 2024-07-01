@@ -68,7 +68,6 @@ export default function TokenBlock() {
       </CardContent>
       <CardFooter className="border-t px-6 py-4">
         <Button
-          disabled={!bot}
           onClick={() => {
             toast.promise(
               mutateAsync({ token: data.token, chat_id: data.chat_id }),
