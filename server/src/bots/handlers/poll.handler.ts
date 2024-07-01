@@ -28,7 +28,7 @@ export class PollHandler {
       const message = await this.messagesService.getById(Number(message_id));
       await ctx.telegram.sendMessage(
         bot.chat_id,
-        `Нова відповідь:\nПовідомлення: ${message.name}\nКористувач: ${client.custom_name ? client.custom_name : '' + ' @' + client.username}\nВибір: ${poll}`,
+        `Нова відповідь:\nПовідомлення: ${message.name}\nКористувач: ${(client.custom_name ? client.custom_name : '') + ' @' + client.username}\nВибір: ${poll}`,
         {
           parse_mode: 'HTML',
         },
