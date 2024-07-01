@@ -86,15 +86,15 @@ export class BotsService implements OnModuleInit {
     const find = await this.botRepository.findOne({
       where: { user_id: user_id },
     });
+    let bot;
     if (!find)
-      return await this.botRepository.save({
+      bot = await this.botRepository.save({
         ...createBotDto,
         user_id: user_id,
       });
-    return await this.botRepository.update(
-      { id: find.id },
-      { ...createBotDto },
-    );
+    bot = await this.botRepository.update({ id: find.id }, { ...createBotDto });
+    await this.initializeBots();
+    return bot;
   }
 
   async findByUser(user_id: number) {
