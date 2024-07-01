@@ -15,7 +15,7 @@ export class ClientEntity {
   @CreateDateColumn()
   created_at: Date;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'bigint' })
   telegram_id: number;
 
   @Column({ nullable: true })
