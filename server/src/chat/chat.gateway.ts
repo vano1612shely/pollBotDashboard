@@ -7,13 +7,12 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { MessageEntity } from '../messages/entities/message.entity';
 import { ChatEntity } from './entities/chat.entity';
-import * as process from 'process';
+import { ConfigService } from '@nestjs/config';
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: new ConfigService().get('CLIENT_URL'),
     methods: ['GET', 'POST'],
     credentials: true,
   },

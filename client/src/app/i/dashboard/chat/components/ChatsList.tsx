@@ -7,7 +7,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSocket } from "@/providers/socketProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-export default function ChatsList() {
+import { clsx } from "clsx";
+export default function ChatsList({
+  client_id,
+}: {
+  client_id?: number | null;
+}) {
   const { socket } = useSocket();
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["chats"],
@@ -56,7 +61,10 @@ export default function ChatsList() {
                       id: client.id,
                     },
                   }}
-                  className="flex items-center gap-2 p-2 rounded hover:bg-muted-foreground duration-200 cursor-pointer border"
+                  className={clsx(
+                    "flex items-center gap-2 p-2 rounded hover:bg-muted-foreground duration-200 cursor-pointer border",
+                    client_id === client.id && "bg-muted-foreground",
+                  )}
                 >
                   <div className="relative">
                     <Avatar>

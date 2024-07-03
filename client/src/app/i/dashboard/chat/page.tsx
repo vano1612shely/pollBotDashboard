@@ -10,7 +10,7 @@ export default function ChatPage({
     <>
       <div className="flex gap-5">
         <div className="w-[400px]">
-          <ChatsList />
+          <ChatsList client_id={Number(searchParams.id)} />
         </div>
         <Chat client_id={Number(searchParams.id)} />
       </div>
