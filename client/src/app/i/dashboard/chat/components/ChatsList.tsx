@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSocket } from "@/providers/socketProvider";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function ChatsList() {
   const { socket } = useSocket();
   const { data, isLoading, refetch } = useQuery({
@@ -57,20 +58,15 @@ export default function ChatsList() {
                   }}
                   className="flex items-center gap-2 p-2 rounded hover:bg-muted-foreground duration-200 cursor-pointer border"
                 >
-                  {client.img_link && (
-                    <div className="relative">
-                      <Image
-                        className="w-10 h-10 rounded-[50%]"
-                        src={client.img_link}
-                        alt="user image"
-                        width={100}
-                        height={100}
-                      />
-                      {!client.messages[0].read && (
-                        <div className="absolute w-3 h-3 bg-red-700 rounded-[50%] top-0 right-0"></div>
-                      )}
-                    </div>
-                  )}
+                  <div className="relative">
+                    <Avatar>
+                      <AvatarImage src={client.img_link} />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    {!client.messages[0].read && (
+                      <div className="absolute w-3 h-3 bg-red-700 rounded-[50%] top-0 right-0"></div>
+                    )}
+                  </div>
                   <div>
                     <p className="font-semibold text-md flex gap-2 leading-0">
                       <span>{client.custom_name}</span>{" "}
