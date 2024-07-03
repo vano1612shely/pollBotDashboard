@@ -66,7 +66,7 @@ export default function ChatsList() {
                         {client.last_name && client.last_name[0]}
                       </AvatarFallback>
                     </Avatar>
-                    {!client.messages[0].read && (
+                    {client.messages.length > 0 && !client.messages[0].read && (
                       <div className="absolute w-3 h-3 bg-red-700 rounded-[50%] top-0 right-0"></div>
                     )}
                   </div>
