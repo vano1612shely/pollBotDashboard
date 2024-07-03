@@ -61,7 +61,10 @@ export default function ChatsList() {
                   <div className="relative">
                     <Avatar>
                       <AvatarImage src={client.img_link} />
-                      <AvatarFallback>CN</AvatarFallback>
+                      <AvatarFallback>
+                        {client.first_name && client.first_name[0]}
+                        {client.last_name && client.last_name[0]}
+                      </AvatarFallback>
                     </Avatar>
                     {!client.messages[0].read && (
                       <div className="absolute w-3 h-3 bg-red-700 rounded-[50%] top-0 right-0"></div>

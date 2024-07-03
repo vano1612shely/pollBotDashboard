@@ -9,10 +9,11 @@ import {
 import { Server, Socket } from 'socket.io';
 import { MessageEntity } from '../messages/entities/message.entity';
 import { ChatEntity } from './entities/chat.entity';
+import * as process from 'process';
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.CLIENT_URL,
     methods: ['GET', 'POST'],
     credentials: true,
   },
