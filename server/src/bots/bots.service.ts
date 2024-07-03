@@ -25,6 +25,7 @@ import { PollHandler } from './handlers/poll.handler';
 import { AdminHandler } from './handlers/admin.handler';
 import { sendMessageScene } from './scenes/send_message.scene';
 import { pollScene, pollScene2, pollSceneName } from './scenes/poll.scene';
+import { MessageHandler } from './handlers/message.handler';
 
 @Injectable()
 export class BotsService implements OnModuleInit {
@@ -39,6 +40,7 @@ export class BotsService implements OnModuleInit {
     private readonly clientService: ClientService,
     private readonly pollHandler: PollHandler,
     private readonly adminHandler: AdminHandler,
+    private readonly messageHandler: MessageHandler,
   ) {}
 
   async onModuleInit() {
@@ -70,6 +72,7 @@ export class BotsService implements OnModuleInit {
       this.customNameHandler.register(this.bot, bot);
       this.pollHandler.register(this.bot, bot);
       this.adminHandler.register(this.bot, bot);
+      this.messageHandler.register(this.bot, bot);
       this.bot.launch();
       console.log(`Bot initialized`);
     } catch (error) {
@@ -162,7 +165,7 @@ export class BotsService implements OnModuleInit {
     }
     for (const user of users) {
       const buttons = createInlineKeyboard(message.buttons, message.id);
-      this.bot.telegram.sendMessage(
+      await this.bot.telegram.sendMessage(
         user.telegram_id,
         parseText(message.message),
         {
@@ -170,7 +173,26 @@ export class BotsService implements OnModuleInit {
           ...buttons,
         },
       );
+      await this.sleep(1000);
     }
     return true;
+  }
+
+  async sendMessageForClient(message: string, client_telegram_id: number) {
+    try {
+      const ctx = await this.bot.telegram.sendMessage(
+        client_telegram_id,
+        message,
+        {
+          parse_mode: 'HTML',
+        },
+      );
+      return ctx;
+    } catch (e) {
+      console.log('Не вдалось відправити повідомлення');
+    }
+  }
+  sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

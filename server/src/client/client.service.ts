@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientEntity } from './entities/client.entity';
 import { Like, Repository } from 'typeorm';
 import { ResultsEntity } from '../messages/entities/results.entity';
+import { ChatEntity } from '../chat/entities/chat.entity';
 
 @Injectable()
 export class ClientService {
@@ -12,6 +13,9 @@ export class ClientService {
     private readonly clientRepository: Repository<ClientEntity>,
     @InjectRepository(ResultsEntity)
     private readonly resultsRepository: Repository<ResultsEntity>,
+
+    @InjectRepository(ChatEntity)
+    private readonly chatRepository: Repository<ChatEntity>,
   ) {}
   async create(createClientDto: CreateClientDto) {
     return await this.clientRepository.save(createClientDto);
@@ -38,12 +42,13 @@ export class ClientService {
   }
 
   async findOne(id: number) {
-    return await this.clientRepository.findOne({
-      where: { id: id },
-      relations: {
-        results: true,
-      },
-    });
+    if (!isNaN(id))
+      return await this.clientRepository.findOne({
+        where: { id: id },
+        relations: {
+          results: true,
+        },
+      });
   }
 
   async findAllByStatus(verified: true | false | 'all') {
@@ -95,5 +100,25 @@ export class ClientService {
       },
     });
     return { count: count, data: results };
+  }
+
+  async delete(id: number): Promise<boolean> {
+    try {
+      await this.clientRepository.delete({ id: id });
+      return true;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async getAllClientsWithLastMessage(): Promise<ClientEntity[]> {
+    const clients = await this.clientRepository.find({
+      order: {
+        messages: { createdAt: 'desc' },
+      },
+      relations: { messages: true },
+    });
+
+    return clients;
   }
 }

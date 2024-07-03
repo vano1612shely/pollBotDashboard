@@ -24,11 +24,23 @@ export class StartHandler {
   async execute(ctx: Context, bot: BotEntity) {
     let subscriber = await this.clientService.findOneByTelegramId(ctx.from.id);
     if (!subscriber) {
+      let file_url: string = '';
+      try {
+        file_url = (
+          await ctx.telegram.getFileLink(
+            (await ctx.telegram.getUserProfilePhotos(ctx.from.id, 0, 1))
+              .photos[0][0].file_id,
+          )
+        ).href;
+      } catch (e) {
+        console.log(e);
+      }
       subscriber = await this.clientService.create({
         username: ctx.from.username,
         first_name: ctx.from.first_name,
         last_name: ctx.from.last_name,
         telegram_id: ctx.from.id,
+        img_link: file_url,
       });
       await ctx.telegram.sendMessage(
         bot.chat_id,

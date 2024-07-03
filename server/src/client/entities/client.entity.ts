@@ -7,6 +7,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { ResultsEntity } from '../../messages/entities/results.entity';
+import { ChatEntity } from '../../chat/entities/chat.entity';
 @Entity('client')
 export class ClientEntity {
   @PrimaryGeneratedColumn()
@@ -30,9 +31,15 @@ export class ClientEntity {
   @Column({ nullable: true })
   last_name: string;
 
+  @Column({ nullable: true })
+  img_link: string;
+
   @Column({ default: false, type: 'boolean' })
   is_activated: boolean;
 
   @OneToMany(() => ResultsEntity, (res) => res.client)
   results: ResultsEntity[];
+
+  @OneToMany(() => ChatEntity, (chat) => chat.client)
+  messages: ChatEntity[];
 }

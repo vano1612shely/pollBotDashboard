@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserInfo from "@/app/i/dashboard/users/[id]/components/UserInfo";
 import ResultTable from "@/app/i/dashboard/users/[id]/components/table/table";
+import Chat from "@/app/i/dashboard/chat/components/Chat";
 
 export default function UserPage({ params }: { params: { id: number } }) {
   const { data, isLoading } = useQuery({
@@ -39,7 +40,9 @@ export default function UserPage({ params }: { params: { id: number } }) {
         <TabsContent value="poll_data" className="p-2">
           <ResultTable id={data.id} />
         </TabsContent>
-        <TabsContent value="chat" className="p-2"></TabsContent>
+        <TabsContent value="chat" className="p-2">
+          <Chat client_id={data.id} />
+        </TabsContent>
       </Tabs>
     </>
   );

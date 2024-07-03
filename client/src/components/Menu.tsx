@@ -1,7 +1,28 @@
+"use client";
 import Link from "next/link";
-import { Bot, Home, Settings, SquarePlus, Users, Vote } from "lucide-react";
+import {
+  Bot,
+  Home,
+  MessageCircle,
+  MessageSquareText,
+  Settings,
+  SquarePlus,
+  Users,
+  Vote,
+} from "lucide-react";
+import { useSocket } from "@/providers/socketProvider";
+import { useEffect, useState } from "react";
 
 export default function Menu() {
+  const [count, setCount] = useState(0);
+  const { socket } = useSocket();
+  useEffect(() => {
+    socket.on("unreadMessages", (c) => setCount(c));
+
+    return () => {
+      socket.off("unreadMessages");
+    };
+  }, []);
   return (
     <div className="hidden border-r bg-muted/40 md:block relative">
       <div className="flex h-full max-h-screen flex-col gap-2 fixed md:w-[220px] lg:w-[280px]">
@@ -42,6 +63,18 @@ export default function Menu() {
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
             >
               <SquarePlus className="h-4 w-4" /> Кнопки
+            </Link>
+            <Link
+              href="/i/dashboard/chat"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
+              <MessageSquareText className="h-4 w-4" />
+              Чат
+              {count > 0 && (
+                <div className="bg-red-700 w-[20px] h-[20px] text-sm text-white rounded-[50%] flex ml-auto">
+                  <p className="m-auto">{count}</p>
+                </div>
+              )}
             </Link>
           </nav>
         </div>

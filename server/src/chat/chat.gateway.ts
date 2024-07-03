@@ -1,38 +1,58 @@
 import {
-  WebSocketGateway,
   SubscribeMessage,
-  MessageBody,
+  WebSocketGateway,
+  WebSocketServer,
+  OnGatewayInit,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
+import { Server, Socket } from 'socket.io';
+import { MessageEntity } from '../messages/entities/message.entity';
+import { ChatEntity } from './entities/chat.entity';
 
-@WebSocketGateway()
-export class ChatGateway {
-  constructor(private readonly chatService: ChatService) {}
+@WebSocketGateway({
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+})
+export class ChatGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
+  @WebSocketServer() server: Server;
 
-  @SubscribeMessage('createChat')
-  create(@MessageBody() createChatDto: CreateChatDto) {
-    return this.chatService.create(createChatDto);
+  afterInit(server: Server) {
+    console.log('WebSocket server initialized');
+  }
+  handleConnection(client: Socket, ...args: any[]) {
+    // console.log('Client connected:', client.id);
   }
 
-  @SubscribeMessage('findAllChat')
-  findAll() {
-    return this.chatService.findAll();
+  handleDisconnect(client: Socket) {
+    // console.log('Client disconnected:', client.id);
   }
 
-  @SubscribeMessage('findOneChat')
-  findOne(@MessageBody() id: number) {
-    return this.chatService.findOne(id);
+  @SubscribeMessage('messageToServer')
+  handleMessage(client: Socket, payload: any): void {
+    // Handle incoming messages from the client
+    this.server.emit('messageToClient', payload);
   }
 
-  @SubscribeMessage('updateChat')
-  update(@MessageBody() updateChatDto: UpdateChatDto) {
-    return this.chatService.update(updateChatDto.id, updateChatDto);
+  @SubscribeMessage('joinToChat')
+  joinToChat(client: Socket, payload: { client_id: number }): void {
+    console.log(payload);
   }
 
-  @SubscribeMessage('removeChat')
-  remove(@MessageBody() id: number) {
-    return this.chatService.remove(id);
+  newMessage(client_id: number, message: ChatEntity) {
+    this.server.emit('newMessage', { client_id: client_id, message: message });
+  }
+
+  messegeRead(message_id: number) {
+    this.server.emit('messegeRead', { message_id: message_id });
+  }
+
+  updateUnreadMessages(count: number) {
+    this.server.emit('unreadMessages', count);
   }
 }

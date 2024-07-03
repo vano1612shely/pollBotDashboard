@@ -1,4 +1,4 @@
-import { Context, Markup } from 'telegraf';
+import { Markup } from 'telegraf';
 function isValidURL(url: string): boolean {
   const urlPattern = new RegExp(
     '^(https?:\\/\\/)?' + // протокол
@@ -32,7 +32,6 @@ export function createInlineKeyboard(
           rowArr.push(Markup.button.url(item.text, item.link));
         }
       });
-      console.log(rowArr);
       arr.push(rowArr);
     });
     return Markup.inlineKeyboard(arr);

@@ -1,12 +1,9 @@
 import { Markup, Scenes } from 'telegraf';
 import { IBotContext } from '../context';
-import { BotsService } from '../bots.service';
 import { ClientEntity } from '../../client/entities/client.entity';
-import { MessageType } from '../../messages/entities/message.entity';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { createInlineKeyboard, parseText } from '../handlers/lib';
+import { parseText } from '../handlers/lib';
 import { ClientService } from '../../client/client.service';
-import { message } from 'telegraf/filters';
 
 export const sendMessageScene = new Scenes.BaseScene<IBotContext>(
   'send_message',
@@ -72,13 +69,14 @@ export class SendMessageScene {
         throw new BadRequestException('Користувачів не знайдено');
       }
       for (const user of users) {
-        ctx.telegram.sendMessage(
+        await ctx.telegram.sendMessage(
           user.telegram_id,
           parseText(ctx.session.message),
           {
             parse_mode: 'HTML',
           },
         );
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       await ctx.reply('Повідомлення відправленно!');
       return true;

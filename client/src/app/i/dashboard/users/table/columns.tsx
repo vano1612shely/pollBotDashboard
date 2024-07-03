@@ -179,6 +179,11 @@ export const clientColumns: ColumnDef<ClientType>[] = [
           ),
       });
       // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { mutate: deleteClient, data: deleteData } = useMutation({
+        mutationKey: ["delete", row.original.id],
+        mutationFn: () => clientService.delete(row.original.id),
+      });
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { refetch } = useQuery({ queryKey: ["clients"] });
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
@@ -186,6 +191,12 @@ export const clientColumns: ColumnDef<ClientType>[] = [
           refetch();
         }
       }, [data]);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useEffect(() => {
+        if (deleteData) {
+          refetch();
+        }
+      }, [deleteData]);
       return (
         <DropdownMenu open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
@@ -213,6 +224,13 @@ export const clientColumns: ColumnDef<ClientType>[] = [
                     Верифікувати
                   </p>
                 )}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-red-700"
+                onClick={() => deleteClient()}
+              >
+                <Trash className="w-4 h-4" />
+                Видалити
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link

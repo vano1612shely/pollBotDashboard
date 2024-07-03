@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
@@ -19,6 +21,7 @@ export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
   async create(@Body() createMessageDto: CreateMessageDto) {
     return await this.messagesService.create(createMessageDto);
   }

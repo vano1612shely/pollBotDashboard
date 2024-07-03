@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { BotsService } from './bots.service';
 import { BotsController } from './bots.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,6 +14,9 @@ import { SendMessageScene } from './scenes/send_message.scene';
 import { PollScene, PollScene2, PollSceneName } from './scenes/poll.scene';
 import { ButtonsModule } from '../buttons/buttons.module';
 import { CustomNameScene } from './scenes/custom_name.scene';
+import { MessageHandler } from './handlers/message.handler';
+import { ChatService } from '../chat/chat.service';
+import { ChatModule } from '../chat/chat.module';
 
 @Module({
   imports: [
@@ -21,6 +24,7 @@ import { CustomNameScene } from './scenes/custom_name.scene';
     ClientModule,
     MessagesModule,
     ButtonsModule,
+    ChatModule,
   ],
   controllers: [BotsController],
   providers: [
@@ -35,6 +39,7 @@ import { CustomNameScene } from './scenes/custom_name.scene';
     PollScene2,
     PollSceneName,
     CustomNameScene,
+    MessageHandler,
   ],
   exports: [BotsService],
 })

@@ -1,6 +1,7 @@
 import { api, apiClassic } from "@/services/api";
 import { ClientType } from "@/types/client.type";
 import { ResultType } from "@/types/result.type";
+import { ChatMessage } from "@/types/chat.type";
 
 class ClientService {
   async getById(id: number): Promise<ClientType> {
@@ -47,6 +48,18 @@ class ClientService {
     const res = await api.patch(`/client/customName/${id}`, {
       name: name,
     });
+    return res.data;
+  }
+
+  async delete(id: number): Promise<boolean> {
+    const res = await api.delete(`/client/${id}`);
+    return res.data;
+  }
+
+  async getWithMessage(): Promise<
+    (ClientType & { messages: ChatMessage[] })[]
+  > {
+    const res = await api.get(`/client/withMessage`);
     return res.data;
   }
 }

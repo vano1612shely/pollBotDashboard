@@ -1,4 +1,5 @@
 import { ResultType } from "@/types/result.type";
+import { ChatMessage } from "@/types/chat.type";
 
 export type ClientType = {
   id: number;
@@ -10,4 +11,6 @@ export type ClientType = {
   last_name: string;
   is_activated: boolean;
   results?: ResultType[];
+  messages?: ChatMessage[];
+  img_link?: string;
 };

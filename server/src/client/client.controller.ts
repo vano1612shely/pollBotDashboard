@@ -29,7 +29,10 @@ export class ClientController {
     const pageNumber = page ? Number(page) : 1; // Default value - 1
     return await this.clientService.findAll(perPage, pageNumber, search);
   }
-
+  @Get('/withMessage')
+  async getWithMessage() {
+    return await this.clientService.getAllClientsWithLastMessage();
+  }
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<ClientEntity> {
     return await this.clientService.findOne(+id);
@@ -58,5 +61,10 @@ export class ClientController {
     @Body() data: { name: string },
   ): Promise<ClientEntity> {
     return await this.clientService.setCustomName(+id, data.name);
+  }
+
+  @Delete('/:id')
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<boolean> {
+    return await this.clientService.delete(id);
   }
 }
