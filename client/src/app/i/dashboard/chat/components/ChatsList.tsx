@@ -62,7 +62,7 @@ export default function ChatsList({
                     },
                   }}
                   className={clsx(
-                    "flex items-center gap-2 p-2 rounded hover:bg-muted-foreground duration-200 cursor-pointer border",
+                    "flex items-center gap-2 p-2 rounded hover:bg-blue-200 duration-200 cursor-pointer border",
                     client_id === client.id && "bg-blue-200",
                   )}
                 >
