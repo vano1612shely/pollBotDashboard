@@ -12,7 +12,7 @@ import { ConfigService } from '@nestjs/config';
 
 @WebSocketGateway({
   cors: {
-    origin: new ConfigService().get('CLIENT_URL'),
+    origin: [],
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -21,7 +21,14 @@ export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer() server: Server;
-
+  private clientUrl: string;
+  constructor(private configService: ConfigService) {
+    this.clientUrl = this.configService.get<string>('CLIENT_URL');
+    this.setCorsOrigin();
+  }
+  private setCorsOrigin() {
+    this.server.opts.cors.origin = this.clientUrl;
+  }
   afterInit(server: Server) {
     console.log('WebSocket server initialized');
   }
