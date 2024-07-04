@@ -13,4 +13,6 @@ export type ClientType = {
   results?: ResultType[];
   messages?: ChatMessage[];
   img_link?: string;
+  last_message_id?: number;
+  last_message: ChatMessage;
 };

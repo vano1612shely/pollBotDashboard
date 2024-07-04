@@ -59,6 +59,7 @@ export default function ChatsList({
       />
       <ul className="w-full h-full">
         {usersList.map((client, index) => {
+          console.log(client);
           if (
             client.username.includes(search.replace("@", "")) ||
             client.custom_name?.includes(search)
@@ -84,7 +85,7 @@ export default function ChatsList({
                         {client.last_name && client.last_name[0]}
                       </AvatarFallback>
                     </Avatar>
-                    {client.messages.length > 0 && !client.messages[0].read && (
+                    {client.last_message && !client.last_message.read && (
                       <div className="absolute w-3 h-3 bg-red-700 rounded-[50%] top-0 right-0"></div>
                     )}
                   </div>
@@ -94,9 +95,12 @@ export default function ChatsList({
                       <span>@{client.username}</span>
                     </p>
                     <div className="pl-2 text-muted-foreground flex gap-2 items-center leading-0">
-                      {client.messages &&
-                        client.messages.length > 0 &&
-                        client.messages[0].message}
+                      {client.last_message &&
+                        client.last_message.message.slice(0, 20)}
+                      {client.last_message &&
+                      client.last_message.message.length > 20
+                        ? "..."
+                        : ""}
                     </div>
                   </div>
                 </Link>

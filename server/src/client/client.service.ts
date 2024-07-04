@@ -114,11 +114,17 @@ export class ClientService {
   async getAllClientsWithLastMessage(): Promise<ClientEntity[]> {
     const clients = await this.clientRepository.find({
       order: {
-        messages: { createdAt: 'desc' },
+        last_message: { createdAt: 'desc' },
       },
-      relations: { messages: true },
+      relations: { last_message: true },
     });
-
     return clients;
+  }
+
+  async updateLastMessage(client_id: number, message: ChatEntity) {
+    return await this.clientRepository.update(
+      { id: client_id },
+      { last_message: message },
+    );
   }
 }

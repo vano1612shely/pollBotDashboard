@@ -52,7 +52,9 @@ export class ChatService implements OnModuleInit {
       message: create.message,
       client: client,
       type: create.type,
+      telegram_message_id: create.telegram_message_id,
     });
+    await this.clientService.updateLastMessage(client.id, chatMessage);
     this.updateUnreadMessages(this.unreadMessages + 1);
     this.chatGateway.newMessage(client.id, chatMessage);
     if (chatMessage.type === ChatMessageType.BOT) {

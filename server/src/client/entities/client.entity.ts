@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   OneToMany,
-  ManyToOne,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { ResultsEntity } from '../../messages/entities/results.entity';
 import { ChatEntity } from '../../chat/entities/chat.entity';
@@ -15,6 +17,9 @@ export class ClientEntity {
 
   @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @Column({ unique: true, type: 'bigint' })
   telegram_id: number;
@@ -42,4 +47,10 @@ export class ClientEntity {
 
   @OneToMany(() => ChatEntity, (chat) => chat.client)
   messages: ChatEntity[];
+
+  @Column({ nullable: true })
+  last_message_id: number;
+  @OneToOne(() => ChatEntity, (chat) => chat.client)
+  @JoinColumn({ name: 'last_message_id' })
+  last_message: ChatEntity;
 }
