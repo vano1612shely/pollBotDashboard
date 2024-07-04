@@ -8,6 +8,8 @@ import Link from "next/link";
 import { useSocket } from "@/providers/socketProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { clsx } from "clsx";
+import { ChatMessage } from "@/types/chat.type";
+import { ClientType } from "@/types/client.type";
 export default function ChatsList({
   client_id,
 }: {
@@ -18,6 +20,9 @@ export default function ChatsList({
     queryKey: ["chats"],
     queryFn: () => clientService.getWithMessage(),
   });
+  const [usersList, setUsersList] = useState<
+    (ClientType & { messages: ChatMessage[] })[]
+  >([]);
   const [search, setSearch] = useState("");
   useEffect(() => {
     socket.on("newMessage", (payload) => {
@@ -30,6 +35,11 @@ export default function ChatsList({
       socket.off("joinToChat");
     };
   }, []);
+  useEffect(() => {
+    if (data) {
+      setUsersList(data.reverse());
+    }
+  }, [data]);
   if (!data && isLoading) {
     return <div className="h-full w-full"></div>;
   }
@@ -48,7 +58,7 @@ export default function ChatsList({
         onChange={(e) => setSearch(e.target.value)}
       />
       <ul className="w-full h-full">
-        {data.reverse().map((client, index) => {
+        {usersList.map((client, index) => {
           if (
             client.username.includes(search.replace("@", "")) ||
             client.custom_name?.includes(search)
