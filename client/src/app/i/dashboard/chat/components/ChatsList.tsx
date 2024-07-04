@@ -48,7 +48,7 @@ export default function ChatsList({
         onChange={(e) => setSearch(e.target.value)}
       />
       <ul className="w-full h-full">
-        {data.map((client, index) => {
+        {data.reverse().map((client, index) => {
           if (
             client.username.includes(search.replace("@", "")) ||
             client.custom_name?.includes(search)

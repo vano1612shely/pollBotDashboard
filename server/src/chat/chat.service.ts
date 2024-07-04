@@ -86,7 +86,10 @@ export class ChatService implements OnModuleInit {
     if (message) {
       await this.chatRepository.update({ id: id }, { read: true });
       await this.chatRepository.update(
-        { createdAt: LessThanOrEqual(message.createdAt) },
+        {
+          createdAt: LessThanOrEqual(message.createdAt),
+          client_id: message.client_id,
+        },
         { read: true },
       );
       this.chatGateway.messegeRead(message.id);
