@@ -114,7 +114,7 @@ export class ClientService {
   async getAllClientsWithLastMessage(): Promise<ClientEntity[]> {
     const clients = await this.clientRepository.find({
       order: {
-        last_message: { createdAt: 'desc' },
+        last_message: { createdAt: 'asc' },
       },
       relations: { last_message: true },
     });
