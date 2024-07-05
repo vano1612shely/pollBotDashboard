@@ -5,23 +5,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ButtonType } from "@/types/message.type";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { Control, useFieldArray, UseFormReturn } from "react-hook-form";
 import { FormValues } from "@/app/i/dashboard/polls/create/components/messageSchema";
 import CreateMessageButtonRow from "@/app/i/dashboard/polls/create/components/CreateMessageButtonRow";
+import ButtonsPresets from "@/app/i/dashboard/polls/create/components/ButtonsPresets";
 
 export default function CreateMessageButtons({
   form,
@@ -49,12 +38,15 @@ export default function CreateMessageButtons({
               />
             </div>
           ))}
-          <Button
-            type="button"
-            onClick={() => fieldArray.append({ buttons: [] })}
-          >
-            Додати рядок
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button
+              type="button"
+              onClick={() => fieldArray.append({ buttons: [] })}
+            >
+              Додати рядок
+            </Button>
+            <ButtonsPresets form={form} />
+          </div>
         </FormItem>
       )}
     />
