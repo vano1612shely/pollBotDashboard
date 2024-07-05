@@ -121,8 +121,16 @@ export class ClientService {
       },
       relations: { last_message: true },
     });
-    console.log(clients);
-    return clients;
+    const allOtherClients = await this.clientRepository.find({
+      where: {
+        last_message_id: IsNull(),
+      },
+      order: {
+        created_at: 'desc',
+      },
+      relations: { last_message: true },
+    });
+    return [...clients, ...allOtherClients];
   }
 
   async updateLastMessage(client_id: number, message: ChatEntity) {
