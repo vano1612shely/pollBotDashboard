@@ -37,7 +37,7 @@ export default function ChatsList({
   }, []);
   useEffect(() => {
     if (data) {
-      setUsersList(data.reverse());
+      setUsersList(data);
     }
   }, [data]);
   if (!data && isLoading) {
