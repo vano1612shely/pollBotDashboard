@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientEntity } from './entities/client.entity';
-import { Like, Not, Repository } from 'typeorm';
+import { Like, Not, Repository, IsNull } from 'typeorm';
 import { ResultsEntity } from '../messages/entities/results.entity';
 import { ChatEntity } from '../chat/entities/chat.entity';
 
@@ -114,7 +114,7 @@ export class ClientService {
   async getAllClientsWithLastMessage(): Promise<ClientEntity[]> {
     const clients = await this.clientRepository.find({
       where: {
-        last_message_id: Not(null),
+        last_message_id: Not(IsNull()),
       },
       order: {
         last_message: { createdAt: 'desc' },
