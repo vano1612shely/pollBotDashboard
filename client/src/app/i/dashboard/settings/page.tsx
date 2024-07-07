@@ -9,12 +9,18 @@ import useBotStore from "@/store/bot.store";
 import toast from "react-hot-toast";
 import { errorCatch } from "@/services/error";
 import { MessageType } from "@/types/message.type";
+import UserData from "@/app/i/dashboard/settings/components/UserData";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import authService from "@/services/auth.service";
+import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
   const { data, error, isLoading } = useQuery({
     queryKey: ["bot"],
     queryFn: () => BotService.getBot(),
   });
+  const router = useRouter();
   const setBot = useBotStore((state) => state.setBot);
   useEffect(() => {
     if (error) {
@@ -33,6 +39,7 @@ export default function SettingsPage() {
       </div>
       <TokenBlock />
       <BotControls />
+      <UserData />
       <StartMessage
         type={MessageType.StartU}
         title="Повідомлення для нових користувачів"
@@ -44,6 +51,16 @@ export default function SettingsPage() {
         title="Повідомлення для верифікованих користувачів"
         description="Створіть повідомлення для користувачів, які вже верифіковані"
       />
+      <Button
+        className="flex gap-2 items-center"
+        onClick={() => {
+          authService.logout();
+          router.replace("/login");
+        }}
+      >
+        Вийти з облікового запису
+        <LogOut className="w-4 h-4" />
+      </Button>
     </>
   );
 }

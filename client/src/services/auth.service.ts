@@ -1,4 +1,4 @@
-import { apiClassic } from "@/services/api";
+import { api, apiClassic } from "@/services/api";
 import { LoginType } from "@/types/login.type";
 import {
   removeTokenFromStorage,
@@ -11,14 +11,23 @@ class AuthService {
     if (res.data.access_token) saveTokenToStorage(res.data.access_token);
     return res.data;
   }
+
+  async update(id: number, data: LoginType) {
+    const res = await api.patch(`/auth/${id}`, data);
+    return res.data;
+  }
   async getNewToken() {
     const res = await apiClassic.post(`/auth/token`);
     if (res.data.access_token) saveTokenToStorage(res.data.access_token);
   }
 
-  async logout() {
-    const res = await apiClassic.post<boolean>("/auth/logout");
-    if (res.data) removeTokenFromStorage();
+  logout() {
+    // const res = await apiClassic.post<boolean>("/auth/logout");
+    removeTokenFromStorage();
+  }
+
+  async getMe() {
+    const res = await api.get(`/auth/getMe`);
     return res.data;
   }
 }

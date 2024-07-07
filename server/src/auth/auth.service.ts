@@ -53,9 +53,12 @@ export class AuthService {
   }
 
   async getUserById(id: number) {
-    return await this.userRepository.findOne({
-      where: { id: id },
-    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } =
+      await this.userRepository.findOne({
+        where: { id: id },
+      });
+    return userWithoutPassword;
   }
 
   async createUser(data: LoginDto) {
@@ -79,6 +82,17 @@ export class AuthService {
         throw new InternalServerErrorException();
       }
     }
+  }
+
+  async updateUser(id: number, data: LoginDto) {
+    const password = await hash(data.password, 12);
+    const user = this.userRepository.update(
+      {
+        id: id,
+      },
+      { ...data, password: password },
+    );
+    return user;
   }
 
   addTokenToResponse(res: Response, token) {

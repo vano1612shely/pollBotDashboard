@@ -4,7 +4,11 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
   Post,
+  Req,
   Res,
   UsePipes,
   ValidationPipe,
@@ -37,6 +41,20 @@ export class AuthController {
   @UsePipes(new ValidationPipe({ transform: true }))
   async createUser(@Body() data: LoginDto) {
     return await this.authService.createUser(data);
+  }
+
+  @Get('/getMe')
+  async getMe(@Req() req) {
+    return await this.authService.getUserById(req.user_id);
+  }
+
+  @Patch('/:id')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: LoginDto,
+  ) {
+    return await this.authService.updateUser(id, data);
   }
 
   @Post('logout')
