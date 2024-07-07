@@ -91,7 +91,11 @@ export default function UserData() {
                 )}
               />
             </div>
-            <Button>Зберегти</Button>
+            <div>
+              <Button className="bg-green-700 hover:bg-green-600">
+                Зберегти
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
