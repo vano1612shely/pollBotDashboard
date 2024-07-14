@@ -14,6 +14,7 @@ export class CreateMessageDto {
   @IsOptional()
   buttons: any[][];
 
+  @IsOptional()
   @IsString()
   thx_message: string;
 }
