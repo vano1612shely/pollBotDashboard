@@ -64,6 +64,7 @@ export class AuthService {
   async createUser(data: LoginDto) {
     const user = this.userRepository.create(data);
     user.password = await hash(user.password, 12);
+    console.log(user.password);
     try {
       await this.userRepository.save(user);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
