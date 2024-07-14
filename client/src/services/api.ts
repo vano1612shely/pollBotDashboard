@@ -37,12 +37,7 @@ api.interceptors.response.use(
         !error.config._isRetry)
     ) {
       originalRequest._isRetry = true;
-      try {
-        await authService.getNewToken();
-        return api.request(originalRequest);
-      } catch (e) {
-        if (errorCatch(e) === "jwt expired") removeTokenFromStorage();
-      }
+      removeTokenFromStorage();
     }
 
     throw error;

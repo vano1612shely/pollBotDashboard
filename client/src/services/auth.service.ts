@@ -16,10 +16,6 @@ class AuthService {
     const res = await api.patch(`/auth/${id}`, data);
     return res.data;
   }
-  async getNewToken() {
-    const res = await apiClassic.post(`/auth/token`);
-    if (res.data.access_token) saveTokenToStorage(res.data.access_token);
-  }
 
   logout() {
     // const res = await apiClassic.post<boolean>("/auth/logout");
