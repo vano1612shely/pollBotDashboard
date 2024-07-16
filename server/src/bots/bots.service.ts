@@ -165,14 +165,18 @@ export class BotsService implements OnModuleInit {
     }
     for (const user of users) {
       const buttons = createInlineKeyboard(message.buttons, message.id);
-      await this.bot.telegram.sendMessage(
-        user.telegram_id,
-        parseText(message.message),
-        {
-          parse_mode: 'HTML',
-          ...buttons,
-        },
-      );
+      try {
+        await this.bot.telegram.sendMessage(
+          user.telegram_id,
+          parseText(message.message),
+          {
+            parse_mode: 'HTML',
+            ...buttons,
+          },
+        );
+      } catch (e) {
+        console.log(`Cant send message for user ${user.telegram_id}`);
+      }
       await this.sleep(1000);
     }
     return true;
