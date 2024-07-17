@@ -132,6 +132,22 @@ export default function StartMessage(props: StartMessageProps) {
               <Label htmlFor="message">Кнопки</Label>
               <CreateMessageButtons form={form} />
             </div>
+            <div className="grid gap-6">
+              <Label htmlFor="message">Прощальне повідомлення</Label>
+              <TextEditor
+                isLoaded={isReady}
+                content={form.getValues("thx_message") || ""}
+                setContent={(value) => form.setValue("thx_message", value)}
+              />
+              {form.formState.errors.message && (
+                <p className="text-red-500">
+                  {
+                    //@ts-ignore
+                    errors.message.thx_message
+                  }
+                </p>
+              )}
+            </div>
           </CardContent>
           <CardFooter>
             <Button className="bg-green-700" type="submit" disabled={isPending}>
