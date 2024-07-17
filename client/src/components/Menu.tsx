@@ -19,9 +19,14 @@ export default function Menu() {
   const [count, setCount] = useState(0);
   const { socket } = useSocket();
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to control menu visibility
-
+  const sound = new Audio("/sounds/telegram.mp3");
   useEffect(() => {
-    socket.on("unreadMessages", (c) => setCount(c));
+    socket.on("unreadMessages", (c) => {
+      if (c > count) {
+        sound.play();
+      }
+      setCount(c);
+    });
 
     return () => {
       socket.off("unreadMessages");
