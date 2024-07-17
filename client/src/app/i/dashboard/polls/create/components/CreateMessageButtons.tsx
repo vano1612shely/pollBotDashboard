@@ -9,13 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { Control, useFieldArray, UseFormReturn } from "react-hook-form";
 import { FormValues } from "@/app/i/dashboard/polls/create/components/messageSchema";
+import { FormValues as FormV } from "@/app/i/dashboard/settings/components/startMessageSchema";
 import CreateMessageButtonRow from "@/app/i/dashboard/polls/create/components/CreateMessageButtonRow";
 import ButtonsPresets from "@/app/i/dashboard/polls/create/components/ButtonsPresets";
 
 export default function CreateMessageButtons({
   form,
 }: {
-  form: UseFormReturn<FormValues>;
+  form: UseFormReturn<FormValues | FormV>;
 }) {
   const fieldArray = useFieldArray({
     control: form.control,

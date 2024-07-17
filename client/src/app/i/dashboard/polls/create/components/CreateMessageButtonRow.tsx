@@ -25,15 +25,16 @@ import {
 } from "react-hook-form";
 import CreateMessageButton from "@/app/i/dashboard/polls/create/components/CreateMessageButton";
 import { FormValues } from "@/app/i/dashboard/polls/create/components/messageSchema";
+import { FormValues as FormV } from "@/app/i/dashboard/settings/components/startMessageSchema";
 export default function CreateMessageButtonRow({
   form,
   field,
   row,
   rowIndex,
 }: {
-  form: UseFormReturn<FormValues>;
-  field: UseFieldArrayReturn<FormValues, "buttons", "id">;
-  row: FieldArrayWithId<FormValues, "buttons", "id">;
+  form: UseFormReturn<FormValues | FormV>;
+  field: UseFieldArrayReturn<FormValues | FormV, "buttons", "id">;
+  row: FieldArrayWithId<FormValues | FormV, "buttons", "id">;
   rowIndex: number;
 }) {
   const { fields, update, remove } = field;

@@ -21,7 +21,7 @@ import { Trash } from "lucide-react";
 import { UseFieldArrayReturn, UseFormReturn } from "react-hook-form";
 import { FormValues } from "@/app/i/dashboard/polls/create/components/messageSchema";
 import { useState } from "react";
-
+import { FormValues as FormV } from "@/app/i/dashboard/settings/components/startMessageSchema";
 export default function CreateMessageButton({
   buttonIndex,
   rowIndex,
@@ -29,9 +29,9 @@ export default function CreateMessageButton({
   form,
 }: {
   buttonIndex: number;
-  field: UseFieldArrayReturn<FormValues, "buttons", "id">;
+  field: UseFieldArrayReturn<FormValues | FormV, "buttons", "id">;
   rowIndex: number;
-  form: UseFormReturn<FormValues>;
+  form: UseFormReturn<FormValues | FormV>;
 }) {
   const [buttonType, setButtonType] = useState<ButtonType>(
     form.getValues(`buttons.${rowIndex}.buttons.${buttonIndex}.type`),

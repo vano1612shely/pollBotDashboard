@@ -48,7 +48,6 @@ export default function PollInfo({ data }: { data: Message }) {
       },
     },
   });
-  console.log(data);
   return (
     <div className="grid gap-6">
       <div className="grid grid-cols-2 gap-3">

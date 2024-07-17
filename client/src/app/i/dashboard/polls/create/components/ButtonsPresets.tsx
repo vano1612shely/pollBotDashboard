@@ -10,6 +10,7 @@ import { ButtonType } from "@/types/button.type";
 import { useCallback, useRef, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormValues } from "@/app/i/dashboard/polls/create/components/messageSchema";
+import { FormValues as FormV } from "@/app/i/dashboard/settings/components/startMessageSchema";
 interface Page {
   data: { count: number; data: ButtonType[] };
   previousCursor?: number;
@@ -22,7 +23,7 @@ const fetchData = async ({ pageParam = 0 }) => {
 export default function ButtonsPresets({
   form,
 }: {
-  form: UseFormReturn<FormValues>;
+  form: UseFormReturn<FormValues | FormV>;
 }) {
   const [open, setOpen] = useState(false);
   const {

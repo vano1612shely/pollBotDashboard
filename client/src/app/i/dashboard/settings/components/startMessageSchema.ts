@@ -5,6 +5,7 @@ export const buttonSchema = z.object({
   text: z.string().min(1, "Назва кнопки обов'язкова"),
   link: z.string().optional(),
   type: z.nativeEnum(ButtonType).default(ButtonType.LINK),
+  poll: z.string().optional(),
 });
 
 export const rowSchema = z.object({

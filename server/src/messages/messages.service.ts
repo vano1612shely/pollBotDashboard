@@ -39,13 +39,19 @@ export class MessagesService {
         await this.messageRepository.update(
           { id: check.id },
           {
+            name: createMessageDto.type,
             ...createMessageDto,
           },
         );
         return check;
       }
     }
-    return await this.messageRepository.save(createMessageDto);
+    return await this.messageRepository.save({
+      name: createMessageDto.name
+        ? createMessageDto.name
+        : createMessageDto.type,
+      ...createMessageDto,
+    });
   }
 
   async getByType(type: MessageType): Promise<MessageEntity[]> {

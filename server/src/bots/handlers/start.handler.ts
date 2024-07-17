@@ -66,7 +66,8 @@ export class StartHandler {
       message = (await this.messagesService.getByType(MessageType.StartA))[0];
     }
     const text = parseText(message.message);
-    const buttons = createInlineKeyboard(message.buttons);
+    const buttons = createInlineKeyboard(message.buttons, message.id);
+    console.log(JSON.stringify(message.buttons), JSON.stringify(buttons));
     if (buttons) {
       await ctx.reply(text, {
         parse_mode: 'HTML',

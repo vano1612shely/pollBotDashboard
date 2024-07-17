@@ -167,6 +167,7 @@ export default function CreateMessageForm(props: StartMessageProps) {
               </div>
             </div>
             <div className="grid gap-3 p-2">
+              {/* @ts-ignore */}
               <CreateMessageButtons form={form} />
             </div>
             <div className="grid gap-3">
