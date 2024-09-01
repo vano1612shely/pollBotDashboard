@@ -15,4 +15,5 @@ export type ClientType = {
   img_link?: string;
   last_message_id?: number;
   last_message: ChatMessage;
+  is_blocked: boolean;
 };

@@ -33,7 +33,8 @@ export class PollHandler {
           parse_mode: 'HTML',
         },
       );
-      if (message.thx_message) await ctx.reply(parseText(message.thx_message));
+      if (message.thx_message && !client.is_blocked)
+        await ctx.reply(parseText(message.thx_message));
     });
   }
 }

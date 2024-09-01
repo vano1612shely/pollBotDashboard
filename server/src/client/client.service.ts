@@ -20,7 +20,13 @@ export class ClientService {
   async create(createClientDto: CreateClientDto) {
     return await this.clientRepository.save(createClientDto);
   }
-
+  async block(id: number) {
+    const find = await this.clientRepository.findOne({ where: { id } });
+    return await this.clientRepository.update(
+      { id: id },
+      { is_blocked: !find.is_blocked },
+    );
+  }
   async findAll(
     per_page: number = 10,
     page: number = 1,

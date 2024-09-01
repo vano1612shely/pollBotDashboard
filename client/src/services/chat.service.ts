@@ -26,6 +26,11 @@ class ChatService {
     });
     return res.data;
   }
+
+  async delete(id: number) {
+    const res = await api.delete(`/chat/${id}`)
+    return res.data
+  }
 }
 
 const chatService = new ChatService();

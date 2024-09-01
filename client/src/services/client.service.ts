@@ -56,6 +56,11 @@ class ClientService {
     return res.data;
   }
 
+  async blockClient(id: number): Promise<boolean> {
+    const res = await api.post(`/client/block/${id}`);
+    return res.data;
+  }
+
   async getWithMessage(): Promise<
     (ClientType & { messages: ChatMessage[] })[]
   > {

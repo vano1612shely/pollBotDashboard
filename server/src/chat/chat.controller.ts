@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -30,5 +30,9 @@ export class ChatController {
   @Get('/read/:id')
   async readMessages(@Param('id', ParseIntPipe) id: number) {
     return await this.chatService.readMessages(id);
+  }
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.chatService.delete(id);
   }
 }

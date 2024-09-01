@@ -37,6 +37,11 @@ export class ClientController {
   async findOne(@Param('id') id: string): Promise<ClientEntity> {
     return await this.clientService.findOne(+id);
   }
+
+  @Post('/block/:id')
+  async block(@Param('id') id: string) {
+    return await this.clientService.block(+id);
+  }
   @Get('/results/:id')
   async getResults(
     @Query('per_page') per_page: number | null,

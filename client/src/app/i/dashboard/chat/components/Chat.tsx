@@ -33,6 +33,10 @@ export default function Chat({ client_id }: { client_id?: number | null }) {
     mutationKey: ["view", client_id],
     mutationFn: (id: number) => chatService.readMessages(id),
   });
+  const { mutate: deleteChat, data: deleteData } = useMutation({
+    mutationKey: ["delete_chat", client_id],
+    mutationFn: (id: number) => chatService.delete(id),
+  });
   const {
     mutate: sendMessage,
     isPending: isSended,
@@ -77,6 +81,11 @@ export default function Chat({ client_id }: { client_id?: number | null }) {
     }
   }, [viewUpdate]);
   useEffect(() => {
+    if (deleteData) {
+      getData();
+    }
+  }, [deleteData]);
+  useEffect(() => {
     getData();
     socket.emit("joinToChat", { chat_id: client_id });
     socket.on("newMessage", (payload) => {
@@ -101,6 +110,10 @@ export default function Chat({ client_id }: { client_id?: number | null }) {
   };
   return (
     <div className="w-full flex border rounded-lg flex-col p-2 h-[800px]">
+      <div className="w-full rounded border p-3 mb-5 flex justify-between items-center">
+        {client?.username}
+        {client && <Button variant="destructive" onClick={() => deleteChat(client.id)}>Видалити чат</Button>}
+      </div>
       <div className="flex-1 flex flex-col gap-2 overflow-y-scroll">
         {messages.map((message, index) => {
           return (

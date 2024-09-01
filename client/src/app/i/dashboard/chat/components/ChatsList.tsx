@@ -59,7 +59,6 @@ export default function ChatsList({
       />
       <ul className="w-full h-full">
         {usersList.map((client, index) => {
-          console.log(client);
           if (
             client.username.includes(search.replace("@", "")) ||
             client.custom_name?.includes(search)

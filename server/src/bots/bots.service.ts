@@ -26,7 +26,7 @@ import { AdminHandler } from './handlers/admin.handler';
 import { sendMessageScene } from './scenes/send_message.scene';
 import { pollScene, pollScene2, pollSceneName } from './scenes/poll.scene';
 import { MessageHandler } from './handlers/message.handler';
-
+import axios from "axios";
 @Injectable()
 export class BotsService implements OnModuleInit {
   bot: Telegraf<IBotContext> | null = null;
@@ -80,22 +80,27 @@ export class BotsService implements OnModuleInit {
     }
   }
   async createOrUpdate(createBotDto: CreateBotDto, user_id: number) {
-    const res = await (
-      await fetch(`https://api.telegram.org/bot${createBotDto.token}/getMe`)
-    ).json();
-    if (!res.ok) {
+    const res = await axios.get(
+      `https://api.telegram.org/bot${createBotDto.token}/getMe`,
+    );
+    if (!res) {
       throw new BadRequestException('Bot token not valid');
     }
     const find = await this.botRepository.findOne({
       where: { user_id: user_id },
     });
     let bot;
-    if (!find)
+    if (!find) {
       bot = await this.botRepository.save({
         ...createBotDto,
         user_id: user_id,
       });
-    bot = await this.botRepository.update({ id: find.id }, { ...createBotDto });
+    } else {
+      bot = await this.botRepository.update(
+        { id: find.id },
+        { ...createBotDto },
+      );
+    }
     await this.initializeBots();
     return bot;
   }
@@ -164,20 +169,22 @@ export class BotsService implements OnModuleInit {
       throw new BadRequestException('Користувачів не знайдено');
     }
     for (const user of users) {
-      const buttons = createInlineKeyboard(message.buttons, message.id);
-      try {
-        await this.bot.telegram.sendMessage(
-          user.telegram_id,
-          parseText(message.message),
-          {
-            parse_mode: 'HTML',
-            ...buttons,
-          },
-        );
-      } catch (e) {
-        console.log(`Cant send message for user ${user.telegram_id}`);
+      if (!user.is_blocked) {
+        const buttons = createInlineKeyboard(message.buttons, message.id);
+        try {
+          await this.bot.telegram.sendMessage(
+            user.telegram_id,
+            parseText(message.message),
+            {
+              parse_mode: 'HTML',
+              ...buttons,
+            },
+          );
+        } catch (e) {
+          console.log(`Cant send message for user ${user.telegram_id}`);
+        }
+        await this.sleep(1000);
       }
-      await this.sleep(1000);
     }
     return true;
   }

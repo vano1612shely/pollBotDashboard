@@ -60,23 +60,25 @@ export class StartHandler {
       );
     }
     let message: MessageEntity;
-    if (!subscriber.is_activated) {
-      message = (await this.messagesService.getByType(MessageType.StartU))[0];
-    } else {
-      message = (await this.messagesService.getByType(MessageType.StartA))[0];
-    }
-    const text = parseText(message.message);
-    const buttons = createInlineKeyboard(message.buttons, message.id);
-    console.log(JSON.stringify(message.buttons), JSON.stringify(buttons));
-    if (buttons) {
-      await ctx.reply(text, {
-        parse_mode: 'HTML',
-        ...buttons,
-      });
-    } else {
-      await ctx.reply(text, {
-        parse_mode: 'HTML',
-      });
+    if (!subscriber.is_blocked) {
+      if (!subscriber.is_activated) {
+        message = (await this.messagesService.getByType(MessageType.StartU))[0];
+      } else {
+        message = (await this.messagesService.getByType(MessageType.StartA))[0];
+      }
+      const text = parseText(message.message);
+      const buttons = createInlineKeyboard(message.buttons, message.id);
+      console.log(JSON.stringify(message.buttons), JSON.stringify(buttons));
+      if (buttons) {
+        await ctx.reply(text, {
+          parse_mode: 'HTML',
+          ...buttons,
+        });
+      } else {
+        await ctx.reply(text, {
+          parse_mode: 'HTML',
+        });
+      }
     }
   }
 }

@@ -45,12 +45,14 @@ export class ClientEntity {
   @OneToMany(() => ResultsEntity, (res) => res.client)
   results: ResultsEntity[];
 
-  @OneToMany(() => ChatEntity, (chat) => chat.client)
+  @OneToMany(() => ChatEntity, (chat) => chat.client, { onDelete: 'SET NULL' })
   messages: ChatEntity[];
 
   @Column({ nullable: true })
   last_message_id: number;
-  @OneToOne(() => ChatEntity, (chat) => chat.client)
+  @OneToOne(() => ChatEntity, (chat) => chat.client, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'last_message_id' })
   last_message: ChatEntity;
+  @Column({ type: 'boolean', default: false })
+  is_blocked?: boolean;
 }

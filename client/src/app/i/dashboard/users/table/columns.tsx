@@ -20,6 +20,7 @@ import {
   Play,
   Trash,
   Watch,
+  Ban
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -184,6 +185,11 @@ export const clientColumns: ColumnDef<ClientType>[] = [
         mutationFn: () => clientService.delete(row.original.id),
       });
       // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { mutate: blockClient, data: blockData } = useMutation({
+        mutationKey: ["block", row.original.id],
+        mutationFn: () => clientService.blockClient(row.original.id),
+      });
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { refetch } = useQuery({ queryKey: ["clients"] });
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
@@ -197,6 +203,12 @@ export const clientColumns: ColumnDef<ClientType>[] = [
           refetch();
         }
       }, [deleteData]);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useEffect(() => {
+        if (blockData) {
+          refetch();
+        }
+      }, [blockData]);
       return (
         <DropdownMenu open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
@@ -231,6 +243,13 @@ export const clientColumns: ColumnDef<ClientType>[] = [
               >
                 <Trash className="w-4 h-4" />
                 Видалити
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                  className="flex items-center gap-2 text-red-700"
+                  onClick={() => blockClient()}
+              >
+                <Ban className="w-4 h-4" />
+                {row.original.is_blocked ? "Розблокувати" : "Заблокувати"}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link

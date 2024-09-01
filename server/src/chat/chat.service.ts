@@ -83,6 +83,10 @@ export class ChatService implements OnModuleInit {
     return messages;
   }
 
+  async delete(id: number) {
+    return await this.chatRepository.delete({ client_id: id });
+  }
+
   async readMessages(id: number) {
     const message = await this.chatRepository.findOne({ where: { id: id } });
     if (message) {
