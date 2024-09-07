@@ -22,19 +22,19 @@ export class MessageEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
+  @Column()
   name: string;
 
-  @Column({nullable:true})
+  @Column()
   message: string;
 
-  @Column({nullable: true})
+  @Column()
   message_img?: string
 
-  @Column({ nullable: true })
+  @Column()
   thx_message: string;
 
-  @Column({ nullable: true })
+  @Column()
   thx_img: string;
 
   @Column({ default: false })
@@ -43,10 +43,10 @@ export class MessageEntity {
   @CreateDateColumn()
   created_at: Date;
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: 'json' })
   buttons: any;
 
-  @Column({ type: 'enum', enum: MessageType, nullable: true })
+  @Column({ type: 'enum', enum: MessageType})
   type: MessageType;
 
   @OneToMany(() => ResultsEntity, (res) => res.message)

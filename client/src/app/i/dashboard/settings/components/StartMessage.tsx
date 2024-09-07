@@ -119,6 +119,9 @@ export default function StartMessage(props: StartMessageProps) {
   useEffect(() => {
     if (data && data.length > 0) {
       form.setValue("message", data[0].message);
+      form.setValue("thx_message", data[0].thx_message);
+      setImageForMsg(data[0].message_img || "");
+      setImageForThx(data[0].thx_img || "");
       form.setValue("buttons", data[0].buttons);
       setIsReady(true);
     }

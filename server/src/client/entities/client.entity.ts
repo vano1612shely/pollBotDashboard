@@ -49,7 +49,7 @@ export class ClientEntity {
   @OneToMany(() => SendedListEntity, (res) => res.client)
   sended: SendedListEntity[];
 
-  @OneToMany(() => ChatEntity, (chat) => chat.client, { onDelete: 'SET NULL' })
+  @OneToMany(() => ChatEntity, (chat) => chat.client)
   messages: ChatEntity[];
 
   @Column({ nullable: true })
