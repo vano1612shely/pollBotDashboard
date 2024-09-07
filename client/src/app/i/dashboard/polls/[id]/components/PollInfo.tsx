@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import { clsx } from "clsx";
 import { Message } from "@/types/message.type";
 import { Button } from "@/components/ui/button";
-
+import Image from "next/image"
 export default function PollInfo({ data }: { data: Message }) {
   const { mutate, data: mutationData } = useMutation({
     mutationKey: ["sendMessage", data.id],
@@ -72,6 +72,8 @@ export default function PollInfo({ data }: { data: Message }) {
       <Card className="grid gap-3 p-5">
         <Label>Повідомлення</Label>
         <EditorContent editor={editor} />
+        <Label>Зображення</Label>
+        {data?.message_img  ? <Image alt="msg_img" src={data.message_img} width={200} height={200}></Image> : ""}
       </Card>
       <Card className="grid gap-3 p-5">
         <Label>Кнопки</Label>
@@ -97,6 +99,8 @@ export default function PollInfo({ data }: { data: Message }) {
       <Card className="grid gap-3 p-5">
         <Label>Повідомлення після здійснення вибору</Label>
         <EditorContent editor={editor2} />
+        <Label>Зображення</Label>
+        {data?.thx_img  ? <Image alt="msg_img" src={data.thx_img} width={200} height={200}></Image> : ""}
       </Card>
     </div>
   );

@@ -17,10 +17,11 @@ import { CustomNameScene } from './scenes/custom_name.scene';
 import { MessageHandler } from './handlers/message.handler';
 import { ChatService } from '../chat/chat.service';
 import { ChatModule } from '../chat/chat.module';
+import {SendedListEntity} from "../messages/entities/sendedList.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([BotEntity]),
+    TypeOrmModule.forFeature([BotEntity, SendedListEntity]),
     ClientModule,
     MessagesModule,
     ButtonsModule,

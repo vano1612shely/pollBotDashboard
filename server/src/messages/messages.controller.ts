@@ -64,6 +64,16 @@ export class MessagesController {
     return await this.messagesService.getByType(type);
   }
 
+  @Get('/activity/:id')
+  async getActivity(
+      @Query('per_page') per_page: number | null,
+      @Query('page') page: number | null,
+      @Query('search') search: string | null,
+      @Param('id', ParseIntPipe) id: number
+  ) {
+    return await this.messagesService.getActivity(id, per_page, page, search);
+  }
+
   @Post('/send/:id')
   async send(@Param('id', ParseIntPipe) id: number) {
     return await this.messagesService.sendMessage(id);

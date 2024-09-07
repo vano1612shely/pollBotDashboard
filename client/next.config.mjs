@@ -7,6 +7,12 @@ const nextConfig = {
         hostname: "api.telegram.org",
         pathname: "**",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3001",
+        pathname: "**"
+      }
     ],
   },
 };

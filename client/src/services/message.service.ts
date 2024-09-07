@@ -27,6 +27,21 @@ class MessageService {
     });
     return res.data;
   }
+  async getActivity(
+      id: number,
+      per_page?: number | null,
+      page?: number | null,
+      search?: string | null,
+  ): Promise<{ count: number; data: any[] }> {
+    const res = await api.get(`/messages/activity/${id}`, {
+      params: {
+        per_page: per_page,
+        page: page,
+        search: search,
+      },
+    });
+    return res.data;
+  }
   async getArchived(
     per_page?: number | null,
     page?: number | null,

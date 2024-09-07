@@ -25,6 +25,7 @@ export class PollHandler {
         poll,
       );
       const client = await this.clientService.findOneByTelegramId(ctx.from.id);
+      await this.messagesService.setActivity(client.id, message_id)
       const message = await this.messagesService.getById(Number(message_id));
       await ctx.telegram.sendMessage(
         bot.chat_id,
@@ -33,8 +34,15 @@ export class PollHandler {
           parse_mode: 'HTML',
         },
       );
-      if (message.thx_message && !client.is_blocked)
-        await ctx.reply(parseText(message.thx_message));
+      if (message.thx_message && !client.is_blocked) {
+        if(message.thx_img && message.thx_img.endsWith('.gif')) {
+          await ctx.sendAnimation( { url: message.thx_img }, {caption: parseText(message.thx_message)})
+        } else if(message.message_img) {
+          await ctx.sendPhoto( { url: message.thx_img }, {caption: parseText(message.thx_message)})
+        } else {
+          await ctx.reply(parseText(message.thx_message));
+        }
+      }
     });
   }
 }

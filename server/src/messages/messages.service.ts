@@ -12,6 +12,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { BotsService } from '../bots/bots.service';
 import { ResultsEntity } from './entities/results.entity';
 import { ClientService } from '../client/client.service';
+import {SendedListEntity} from "./entities/sendedList.entity";
 
 @Injectable()
 export class MessagesService {
@@ -20,6 +21,8 @@ export class MessagesService {
     private readonly messageRepository: Repository<MessageEntity>,
     @InjectRepository(ResultsEntity)
     private readonly resultsRepository: Repository<ResultsEntity>,
+    @InjectRepository(SendedListEntity)
+    private readonly sendedListRepository: Repository<SendedListEntity>,
     @Inject(forwardRef(() => BotsService))
     private readonly botsService: BotsService,
     private readonly clienService: ClientService,
@@ -46,12 +49,13 @@ export class MessagesService {
         return check;
       }
     }
-    return await this.messageRepository.save({
+    const msg = await this.messageRepository.save({
       name: createMessageDto.name
         ? createMessageDto.name
         : createMessageDto.type,
       ...createMessageDto,
     });
+    return msg
   }
 
   async getByType(type: MessageType): Promise<MessageEntity[]> {
@@ -178,7 +182,36 @@ export class MessagesService {
       result: result,
     });
   }
-
+  async setActivity(client_id:number, message_id: number) {
+    await this.sendedListRepository.update({client_id: client_id, message_id: message_id}, {
+      activity: true
+    })
+  }
+  async getActivity(id: number, per_page: number = 10,
+                    page: number = 1,
+                    search: string | null = null) {
+    const skip = (page - 1) * per_page;
+    const count = await this.sendedListRepository.count({
+      where: { message_id: id },
+    });
+    const results = await this.sendedListRepository.find({
+      where: {
+        message_id: id,
+        client: {
+          username: Like(`%${search ?? ''}%`),
+        },
+        activity: false
+      },
+      take: per_page,
+      skip: skip,
+      order: { id: 'desc' },
+      relations: {
+        message: true,
+        client: true,
+      },
+    });
+    return { count: count, data: results };
+  }
   async archive(id: number) {
     try {
       const msg = await this.messageRepository.findOne({

@@ -27,7 +27,9 @@ export type Message = {
   id: number;
   name?: string;
   message: string;
+  message_img?: string;
   thx_message?: string;
+  thx_img?: string;
   type: MessageType;
   is_send?: boolean;
   created_at: Date;

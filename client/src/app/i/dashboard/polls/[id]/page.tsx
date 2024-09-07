@@ -7,6 +7,7 @@ import messageService from "@/services/message.service";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import IgnoreTable from "@/app/i/dashboard/polls/[id]/components/ignoreTable/table";
 export default function PollPage({ params }: { params: { id: number } }) {
   const { data, isLoading } = useQuery({
     queryKey: ["message", Number(params.id)],
@@ -30,12 +31,16 @@ export default function PollPage({ params }: { params: { id: number } }) {
         <TabsList>
           <TabsTrigger value="info">Інформація</TabsTrigger>
           <TabsTrigger value="users_data">Вибір користувачів</TabsTrigger>
+          <TabsTrigger value="ignore_list">Список користувачік які не відповіли</TabsTrigger>
         </TabsList>
         <TabsContent value="info" className="p-2">
           <PollInfo data={data} />
         </TabsContent>
         <TabsContent value="users_data" className="p-2">
           <ResultTable id={params.id} />
+        </TabsContent>
+        <TabsContent value="ignore_list" className="p-2">
+          <IgnoreTable id={params.id} />
         </TabsContent>
       </Tabs>
     </>

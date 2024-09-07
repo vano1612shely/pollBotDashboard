@@ -27,6 +27,7 @@ import { sendMessageScene } from './scenes/send_message.scene';
 import { pollScene, pollScene2, pollSceneName } from './scenes/poll.scene';
 import { MessageHandler } from './handlers/message.handler';
 import axios from "axios";
+import {SendedListEntity} from "../messages/entities/sendedList.entity";
 @Injectable()
 export class BotsService implements OnModuleInit {
   bot: Telegraf<IBotContext> | null = null;
@@ -34,6 +35,8 @@ export class BotsService implements OnModuleInit {
   constructor(
     @InjectRepository(BotEntity)
     private readonly botRepository: Repository<BotEntity>,
+    @InjectRepository(SendedListEntity)
+    private readonly sendedListRepository: Repository<SendedListEntity>,
     private readonly startHandler: StartHandler,
     private readonly verifyHandler: VerifyHandler,
     private readonly customNameHandler: CustomNameHandler,
@@ -172,14 +175,24 @@ export class BotsService implements OnModuleInit {
       if (!user.is_blocked) {
         const buttons = createInlineKeyboard(message.buttons, message.id);
         try {
-          await this.bot.telegram.sendMessage(
-            user.telegram_id,
-            parseText(message.message),
-            {
-              parse_mode: 'HTML',
-              ...buttons,
-            },
-          );
+          if(message.message_img && message.message_img.endsWith('.gif')) {
+            await this.bot.telegram.sendAnimation(user.telegram_id,  { url: message.message_img }, {caption: parseText(message.message), ...buttons})
+          } else if(message.message_img) {
+            await this.bot.telegram.sendPhoto(user.telegram_id,  { url: message.message_img }, {caption: parseText(message.message), ...buttons})
+          } else {
+            await this.bot.telegram.sendMessage(
+              user.telegram_id,
+              parseText(message.message),
+              {
+                parse_mode: 'HTML',
+                ...buttons,
+              },
+            );
+          }
+          await this.sendedListRepository.save({
+            client: user,
+            message: message
+          })
         } catch (e) {
           console.log(`Cant send message for user ${user.telegram_id}`);
         }

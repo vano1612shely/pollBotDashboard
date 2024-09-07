@@ -16,8 +16,10 @@ export const formSchema = z
   .object({
     buttons: z.array(rowSchema),
     message: z.string().min(1, "Текст повідомлення обов'язковий"),
+    message_img: z.string().optional(),
     type: z.nativeEnum(MessageType).default(MessageType.StartU),
     thx_message: z.string().optional(),
+    thx_img: z.string().optional(),
   })
   .refine((data) => data.message !== "<p></p>", {
     path: ["message"],

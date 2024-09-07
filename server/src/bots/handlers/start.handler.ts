@@ -68,16 +68,23 @@ export class StartHandler {
       }
       const text = parseText(message.message);
       const buttons = createInlineKeyboard(message.buttons, message.id);
-      console.log(JSON.stringify(message.buttons), JSON.stringify(buttons));
-      if (buttons) {
-        await ctx.reply(text, {
+      if(message.message_img && message.message_img.endsWith('.gif')) {
+        await ctx.sendAnimation({url: message.message_img}, {
+          caption: text,
+          parse_mode: 'HTML',
+          ...buttons,
+        });
+      } else if(message.message_img) {
+        await ctx.sendPhoto({url: message.message_img}, {
+          caption: text,
           parse_mode: 'HTML',
           ...buttons,
         });
       } else {
         await ctx.reply(text, {
           parse_mode: 'HTML',
-        });
+          ...buttons,
+        })
       }
     }
   }

@@ -7,6 +7,10 @@ export class CreateMessageDto {
   @IsString()
   message: string;
 
+  @IsString()
+  @IsOptional()
+  message_img?: string;
+
   @IsEnum(MessageType)
   type: MessageType;
 
@@ -17,4 +21,8 @@ export class CreateMessageDto {
   @IsOptional()
   @IsString()
   thx_message: string;
+
+  @IsString()
+  @IsOptional()
+  thx_img?: string;
 }

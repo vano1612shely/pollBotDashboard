@@ -36,6 +36,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CreateMessageButtons from "@/app/i/dashboard/polls/create/components/CreateMessageButtons";
+import {Upload} from "@/components/ui/upload";
+import fileService from "@/services/file.service";
 interface StartMessageProps {
   type: MessageType.StartA | MessageType.StartU;
   title: string;
@@ -68,6 +70,36 @@ export default function StartMessage(props: StartMessageProps) {
     control: form.control,
     name: "buttons",
   });
+  const [imageFormMsg, setImageForMsg] = useState<string>("");
+  const [imageForThx, setImageForThx] = useState<string>("");
+  const {
+    mutate: uploadImageForMessage,
+    data: loadedImageForMessage,
+    isPending: awaitImageForMessage,
+  } = useMutation({
+    mutationKey: ["uploadImageForMessage"],
+    mutationFn: (image: File) => fileService.upload(image),
+  });
+  useEffect(() => {
+    if (loadedImageForMessage) {
+      form.setValue("message_img", loadedImageForMessage.full_link);
+      setImageForMsg(loadedImageForMessage.full_link)
+    }
+  }, [loadedImageForMessage]);
+  const {
+    mutate: uploadImageForThx,
+    data: loadedImageForThx,
+    isPending: awaitImageForThx,
+  } = useMutation({
+    mutationKey: ["uploadImageForThx"],
+    mutationFn: (image: File) => fileService.upload(image),
+  });
+  useEffect(() => {
+    if (loadedImageForThx) {
+      form.setValue("thx_img", loadedImageForThx.full_link);
+      setImageForThx(loadedImageForThx.full_link)
+    }
+  }, [loadedImageForThx]);
   const addButton = (rowIndex: number) => {
     const newButtons = [
       ...fields[rowIndex].buttons,
@@ -114,39 +146,55 @@ export default function StartMessage(props: StartMessageProps) {
             <div className="grid gap-6">
               <div className="grid gap-6">
                 <TextEditor
-                  isLoaded={isReady}
-                  content={form.getValues("message")}
-                  setContent={(value) => form.setValue("message", value)}
+                    isLoaded={isReady}
+                    content={form.getValues("message")}
+                    setContent={(value) => form.setValue("message", value)}
                 />
                 {form.formState.errors.message && (
-                  <p className="text-red-500">
-                    {
-                      //@ts-ignore
-                      errors.message.message
-                    }
-                  </p>
+                    <p className="text-red-500">
+                      {
+                        //@ts-ignore
+                        errors.message.message
+                      }
+                    </p>
                 )}
+                <div className="grid gap-3">
+                  <Label htmlFor="image">Зображення або GIF для повідомлення</Label>
+                  <Upload
+                      imageUrl={imageFormMsg}
+                      onUpload={uploadImageForMessage}
+                      isPending={awaitImageForMessage}
+                  />
+                </div>
               </div>
             </div>
             <div className="grid gap-6 p-2">
               <Label htmlFor="message">Кнопки</Label>
-              <CreateMessageButtons form={form} />
+              <CreateMessageButtons form={form}/>
             </div>
             <div className="grid gap-6">
               <Label htmlFor="message">Прощальне повідомлення</Label>
               <TextEditor
-                isLoaded={isReady}
-                content={form.getValues("thx_message") || ""}
-                setContent={(value) => form.setValue("thx_message", value)}
+                  isLoaded={isReady}
+                  content={form.getValues("thx_message") || ""}
+                  setContent={(value) => form.setValue("thx_message", value)}
               />
               {form.formState.errors.message && (
-                <p className="text-red-500">
-                  {
-                    //@ts-ignore
-                    errors.message.thx_message
-                  }
-                </p>
+                  <p className="text-red-500">
+                    {
+                      //@ts-ignore
+                      errors.message.thx_message
+                    }
+                  </p>
               )}
+              <div className="grid gap-3">
+                <Label htmlFor="image">Зображення або GIF після здійснення вибору</Label>
+                <Upload
+                    imageUrl={imageForThx}
+                    onUpload={uploadImageForThx}
+                    isPending={awaitImageForThx}
+                />
+              </div>
             </div>
           </CardContent>
           <CardFooter>
