@@ -28,13 +28,13 @@ export class MessageEntity {
   @Column()
   message: string;
 
-  @Column()
+  @Column({nullable:true})
   message_img?: string
 
   @Column()
   thx_message: string;
 
-  @Column()
+  @Column({nullable:true})
   thx_img: string;
 
   @Column({ default: false })

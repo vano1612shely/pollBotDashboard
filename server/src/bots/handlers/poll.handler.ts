@@ -37,7 +37,7 @@ export class PollHandler {
       if (message.thx_message && !client.is_blocked) {
         if(message.thx_img && message.thx_img.endsWith('.gif')) {
           await ctx.sendAnimation( { url: message.thx_img }, {caption: parseText(message.thx_message)})
-        } else if(message.message_img) {
+        } else if(message.thx_img) {
           await ctx.sendPhoto( { url: message.thx_img }, {caption: parseText(message.thx_message)})
         } else {
           await ctx.reply(parseText(message.thx_message));
