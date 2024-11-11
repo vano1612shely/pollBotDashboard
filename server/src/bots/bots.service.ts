@@ -163,44 +163,68 @@ export class BotsService implements OnModuleInit {
 
   async sendMessage(message: MessageEntity) {
     let users: ClientEntity[] | null = null;
-    if (message.type === MessageType.MessageForAll)
+    if (message.type === MessageType.MessageForAll) {
       users = await this.clientService.findAllByStatus('all');
-    else if (message.type === MessageType.MessageForA)
+    } else if (message.type === MessageType.MessageForA) {
       users = await this.clientService.findAllByStatus(true);
-    else users = await this.clientService.findAllByStatus(false);
+    } else {
+      users = await this.clientService.findAllByStatus(false);
+    }
     if (users.length === 0) {
       throw new BadRequestException('Користувачів не знайдено');
     }
-    for (const user of users) {
-      if (!user.is_blocked) {
-        const buttons = createInlineKeyboard(message.buttons, message.id);
-        try {
-          if(message.message_img && message.message_img.endsWith('.gif')) {
-            await this.bot.telegram.sendAnimation(user.telegram_id,  { url: message.message_img }, {caption: parseText(message.message), ...buttons})
-          } else if(message.message_img) {
-            await this.bot.telegram.sendPhoto(user.telegram_id,  { url: message.message_img }, {caption: parseText(message.message), ...buttons})
-          } else {
-            await this.bot.telegram.sendMessage(
-              user.telegram_id,
-              parseText(message.message),
-              {
-                parse_mode: 'HTML',
-                ...buttons,
-              },
-            );
-          }
-          await this.sendedListRepository.save({
-            client: user,
-            message: message
+
+    // Define concurrency limit
+    const CONCURRENCY_LIMIT = 10;
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const sendMessagesInBatches = async (batch: ClientEntity[]) => {
+      return Promise.allSettled(
+          batch.map(async (user) => {
+            if (!user.is_blocked) {
+              const buttons = createInlineKeyboard(message.buttons, message.id);
+              try {
+                if (message.message_img && message.message_img.endsWith('.gif')) {
+                  await this.bot.telegram.sendAnimation(
+                      user.telegram_id,
+                      { url: message.message_img },
+                      { caption: parseText(message.message), ...buttons }
+                  );
+                } else if (message.message_img) {
+                  await this.bot.telegram.sendPhoto(
+                      user.telegram_id,
+                      { url: message.message_img },
+                      { caption: parseText(message.message), ...buttons }
+                  );
+                } else {
+                  await this.bot.telegram.sendMessage(
+                      user.telegram_id,
+                      parseText(message.message),
+                      { parse_mode: 'HTML', ...buttons }
+                  );
+                }
+                await this.sendedListRepository.save({
+                  client: user,
+                  message: message
+                });
+              } catch (e) {
+                console.log(`Cant send message for user ${user.telegram_id}:`, e);
+              }
+              await delay(100);
+            }
           })
-        } catch (e) {
-          console.log(`Cant send message for user ${user.telegram_id}`);
-        }
-        await this.sleep(1000);
-      }
+      );
+    };
+
+    // Process users in batches
+    for (let i = 0; i < users.length; i += CONCURRENCY_LIMIT) {
+      const batch = users.slice(i, i + CONCURRENCY_LIMIT);
+      await sendMessagesInBatches(batch);
     }
+
     return true;
   }
+
 
   async sendMessageForClient(message: string, client_telegram_id: number) {
     try {
