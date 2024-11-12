@@ -158,6 +158,21 @@ export const clientColumns: ColumnDef<ClientType>[] = [
     },
   },
   {
+    accessorKey: "his_block_bot",
+    header: "Користувач заблокував бота?",
+    cell: ({ row }) => {
+      return (
+          <p
+              className={clsx(
+                  !row.original.his_block_bot ? "text-green-700" : "text-red-700",
+              )}
+          >
+            {row.original.his_block_bot ? "Так" : "Ні"}
+          </p>
+      );
+    },
+  },
+  {
     accessorKey: "created_at",
     header: "Створено",
     cell: ({ row }) => {

@@ -12,12 +12,14 @@ class ClientService {
     per_page?: number | null,
     page?: number | null,
     search?: string | null,
+    showBlockedUsers?: boolean | null
   ): Promise<{ count: number; data: ClientType[] }> {
     const res = await api.get(`/client`, {
       params: {
         per_page: per_page,
         page: page,
         search: search,
+        showBlockedUsers: showBlockedUsers
       },
     });
     return res.data;

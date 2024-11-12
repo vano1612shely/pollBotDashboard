@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { ResultsEntity } from '../../messages/entities/results.entity';
 import { ChatEntity } from '../../chat/entities/chat.entity';
-import {SendedListEntity} from "../../messages/entities/sendedList.entity";
+import { SendedListEntity } from '../../messages/entities/sendedList.entity';
 @Entity('client')
 export class ClientEntity {
   @PrimaryGeneratedColumn()
@@ -24,6 +24,9 @@ export class ClientEntity {
 
   @Column({ unique: true, type: 'bigint' })
   telegram_id: number;
+
+  @Column({ type: 'boolean', default: false })
+  his_block_bot: boolean;
 
   @Column({ nullable: true })
   custom_name: string;

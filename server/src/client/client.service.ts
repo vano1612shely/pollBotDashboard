@@ -27,10 +27,17 @@ export class ClientService {
       { is_blocked: !find.is_blocked },
     );
   }
+  async userBlockBot(id: number, value: boolean = true) {
+    return await this.clientRepository.update(
+      { id: id },
+      { his_block_bot: value },
+    );
+  }
   async findAll(
     per_page: number = 10,
     page: number = 1,
     search: string | null = null,
+    showBlockedUsers: boolean | null = null,
   ): Promise<{ count: number; data: ClientEntity[] }> {
     const skip = (page - 1) * per_page;
     const count = await this.clientRepository.count({
@@ -39,6 +46,7 @@ export class ClientService {
     const subscribers = await this.clientRepository.find({
       where: {
         username: Like(`%${search ?? ''}%`),
+        his_block_bot: showBlockedUsers,
       },
       take: per_page,
       skip: skip,

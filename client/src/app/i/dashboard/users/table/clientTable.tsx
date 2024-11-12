@@ -32,9 +32,10 @@ export default function ClientTable() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const [showBlockedUsers, setShowBlockedUsers] = useState(false);
   const { data, refetch } = useQuery({
     queryKey: ["clients"],
-    queryFn: () => clientService.getAll(perPage, page, search),
+    queryFn: () => clientService.getAll(perPage, page, search, showBlockedUsers || null),
   });
   const table = useReactTable({
     data: data?.data || [],
@@ -48,12 +49,13 @@ export default function ClientTable() {
     if (data) if (data.count > perPage * page) setPage(page + 1);
   };
   useEffect(() => {
-    refetch();
-  }, [search, perPage, page]);
+    refetch()
+  }, [page, perPage, search, showBlockedUsers]);
   return (
     <div>
+      <div className="flex gap-2 items-center mb-5">
       <Input
-        className="w-80 mb-5"
+        className="w-80"
         placeholder="Введіть username:"
         value={search}
         onChange={(e) => {
@@ -61,6 +63,8 @@ export default function ClientTable() {
           setSearch(e.target.value);
         }}
       />
+     <Button onClick={() => setShowBlockedUsers(!showBlockedUsers)}>{showBlockedUsers ? "Показати всіх користувачів" : "Показати користувачів які заблокували бота"}</Button>
+      </div>
       <div className="rounded-md border bg-background overflow-hidden mb-5 shadow">
         <Table>
           <TableHeader>

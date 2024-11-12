@@ -16,4 +16,5 @@ export type ClientType = {
   last_message_id?: number;
   last_message: ChatMessage;
   is_blocked: boolean;
+  his_block_bot: boolean
 };

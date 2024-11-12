@@ -26,8 +26,8 @@ import { AdminHandler } from './handlers/admin.handler';
 import { sendMessageScene } from './scenes/send_message.scene';
 import { pollScene, pollScene2, pollSceneName } from './scenes/poll.scene';
 import { MessageHandler } from './handlers/message.handler';
-import axios from "axios";
-import {SendedListEntity} from "../messages/entities/sendedList.entity";
+import axios from 'axios';
+import { SendedListEntity } from '../messages/entities/sendedList.entity';
 @Injectable()
 export class BotsService implements OnModuleInit {
   bot: Telegraf<IBotContext> | null = null;
@@ -176,43 +176,53 @@ export class BotsService implements OnModuleInit {
 
     // Define concurrency limit
     const CONCURRENCY_LIMIT = 10;
-    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
 
     const sendMessagesInBatches = async (batch: ClientEntity[]) => {
       return Promise.allSettled(
-          batch.map(async (user) => {
-            if (!user.is_blocked) {
-              const buttons = createInlineKeyboard(message.buttons, message.id);
-              try {
-                if (message.message_img && message.message_img.endsWith('.gif')) {
-                  await this.bot.telegram.sendAnimation(
-                      user.telegram_id,
-                      { url: message.message_img },
-                      { caption: parseText(message.message), ...buttons }
-                  );
-                } else if (message.message_img) {
-                  await this.bot.telegram.sendPhoto(
-                      user.telegram_id,
-                      { url: message.message_img },
-                      { caption: parseText(message.message), ...buttons }
-                  );
-                } else {
-                  await this.bot.telegram.sendMessage(
-                      user.telegram_id,
-                      parseText(message.message),
-                      { parse_mode: 'HTML', ...buttons }
-                  );
-                }
-                await this.sendedListRepository.save({
-                  client: user,
-                  message: message
-                });
-              } catch (e) {
-                console.log(`Cant send message for user ${user.telegram_id}:`, e);
+        batch.map(async (user) => {
+          if (!user.is_blocked) {
+            const buttons = createInlineKeyboard(message.buttons, message.id);
+            try {
+              if (message.message_img && message.message_img.endsWith('.gif')) {
+                await this.bot.telegram.sendAnimation(
+                  user.telegram_id,
+                  { url: message.message_img },
+                  { caption: parseText(message.message), ...buttons },
+                );
+              } else if (message.message_img) {
+                await this.bot.telegram.sendPhoto(
+                  user.telegram_id,
+                  { url: message.message_img },
+                  { caption: parseText(message.message), ...buttons },
+                );
+              } else {
+                await this.bot.telegram.sendMessage(
+                  user.telegram_id,
+                  parseText(message.message),
+                  { parse_mode: 'HTML', ...buttons },
+                );
               }
-              await delay(100);
+              await this.sendedListRepository.save({
+                client: user,
+                message: message,
+              });
+              if (user.his_block_bot) {
+                await this.clientService.userBlockBot(user.id, false);
+              }
+            } catch (e) {
+              if (
+                e.response.error_code === 403 ||
+                e.response.error_code === '403'
+              ) {
+                await this.clientService.userBlockBot(user.id, true);
+              }
+              console.log(`Cant send message for user ${user.telegram_id}:`, e);
             }
-          })
+            await delay(100);
+          }
+        }),
       );
     };
 
@@ -224,7 +234,6 @@ export class BotsService implements OnModuleInit {
 
     return true;
   }
-
 
   async sendMessageForClient(message: string, client_telegram_id: number) {
     try {

@@ -24,10 +24,16 @@ export class ClientController {
     @Query('per_page') per_page: number | null,
     @Query('page') page: number | null,
     @Query('search') search: string | null,
+    @Query('showBlockedUsers') showBlockedUsers: boolean | null,
   ): Promise<{ count: number; data: ClientEntity[] }> {
-    const perPage = per_page ? Number(per_page) : 10; // Default value - 10
-    const pageNumber = page ? Number(page) : 1; // Default value - 1
-    return await this.clientService.findAll(perPage, pageNumber, search);
+    const perPage = per_page ? Number(per_page) : 10;
+    const pageNumber = page ? Number(page) : 1;
+    return await this.clientService.findAll(
+      perPage,
+      pageNumber,
+      search,
+      showBlockedUsers,
+    );
   }
   @Get('/withMessage')
   async getWithMessage() {
