@@ -11,6 +11,7 @@ import { clsx } from "clsx";
 import { Message } from "@/types/message.type";
 import { Button } from "@/components/ui/button";
 import Image from "next/image"
+import {cn} from "@/lib/utils";
 export default function PollInfo({ data }: { data: Message }) {
   const { mutate, data: mutationData } = useMutation({
     mutationKey: ["sendMessage", data.id],
@@ -66,7 +67,8 @@ export default function PollInfo({ data }: { data: Message }) {
           </p>
         </Card>
         <Card className="p-5">
-          Дата створення: {dayjs(data?.created_at).format("YYYY/MM/DD HH:mm")}
+          Дата створення: {dayjs(data?.created_at).format("YYYY/MM/DD HH:mm")} <br/>
+          Кількість вдало відправлених повідомлень: <span className={cn(data.sendedCount === data.totalCount?"text-green-600":"text-red-600")}>{data.sendedCount}/{data.totalCount}</span>
         </Card>
       </div>
       <Card className="grid gap-3 p-5">

@@ -34,6 +34,8 @@ export type Message = {
   is_send?: boolean;
   created_at: Date;
   archived: boolean;
+  totalCount: number;
+  sendedCount: number;
   buttons: {
     buttons: Button[];
   }[];

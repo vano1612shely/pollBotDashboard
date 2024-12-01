@@ -15,13 +15,13 @@ import { PollScene, PollScene2, PollSceneName } from './scenes/poll.scene';
 import { ButtonsModule } from '../buttons/buttons.module';
 import { CustomNameScene } from './scenes/custom_name.scene';
 import { MessageHandler } from './handlers/message.handler';
-import { ChatService } from '../chat/chat.service';
 import { ChatModule } from '../chat/chat.module';
-import {SendedListEntity} from "../messages/entities/sendedList.entity";
+import { SendedListEntity } from '../messages/entities/sendedList.entity';
+import { MessageEntity } from '../messages/entities/message.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([BotEntity, SendedListEntity]),
+    TypeOrmModule.forFeature([BotEntity, SendedListEntity, MessageEntity]),
     ClientModule,
     MessagesModule,
     ButtonsModule,

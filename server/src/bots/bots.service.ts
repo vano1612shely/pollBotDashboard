@@ -37,6 +37,8 @@ export class BotsService implements OnModuleInit {
     private readonly botRepository: Repository<BotEntity>,
     @InjectRepository(SendedListEntity)
     private readonly sendedListRepository: Repository<SendedListEntity>,
+    @InjectRepository(MessageEntity)
+    private readonly messageRepository: Repository<MessageEntity>,
     private readonly startHandler: StartHandler,
     private readonly verifyHandler: VerifyHandler,
     private readonly customNameHandler: CustomNameHandler,
@@ -163,6 +165,7 @@ export class BotsService implements OnModuleInit {
 
   async sendMessage(message: MessageEntity) {
     let users: ClientEntity[] | null = null;
+    let count = 0;
     if (message.type === MessageType.MessageForAll) {
       users = await this.clientService.findAllByStatus('all');
     } else if (message.type === MessageType.MessageForA) {
@@ -173,7 +176,12 @@ export class BotsService implements OnModuleInit {
     if (users.length === 0) {
       throw new BadRequestException('Користувачів не знайдено');
     }
-
+    await this.messageRepository.update(
+      { id: message.id },
+      {
+        totalCount: users.length,
+      },
+    );
     // Define concurrency limit
     const CONCURRENCY_LIMIT = 10;
     const delay = (ms: number) =>
@@ -208,6 +216,7 @@ export class BotsService implements OnModuleInit {
                 client: user,
                 message: message,
               });
+              count++;
               if (user.his_block_bot) {
                 await this.clientService.userBlockBot(user.id, false);
               }
@@ -230,6 +239,12 @@ export class BotsService implements OnModuleInit {
     for (let i = 0; i < users.length; i += CONCURRENCY_LIMIT) {
       const batch = users.slice(i, i + CONCURRENCY_LIMIT);
       await sendMessagesInBatches(batch);
+      await this.messageRepository.update(
+        { id: message.id },
+        {
+          sendedCount: count,
+        },
+      );
     }
 
     return true;
