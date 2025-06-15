@@ -7,10 +7,13 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { ResultsEntity } from '../../messages/entities/results.entity';
 import { ChatEntity } from '../../chat/entities/chat.entity';
 import { SendedListEntity } from '../../messages/entities/sendedList.entity';
+import { CityEntity } from '../../city/entities/city.entity';
+
 @Entity('client')
 export class ClientEntity {
   @PrimaryGeneratedColumn()
@@ -57,9 +60,18 @@ export class ClientEntity {
 
   @Column({ nullable: true })
   last_message_id: number;
+
   @OneToOne(() => ChatEntity, (chat) => chat.client, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'last_message_id' })
   last_message: ChatEntity;
+
   @Column({ type: 'boolean', default: false })
   is_blocked?: boolean;
+
+  @Column({ nullable: true })
+  city_id: number;
+
+  @ManyToOne(() => CityEntity, (city) => city.clients, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'city_id' })
+  city: CityEntity;
 }

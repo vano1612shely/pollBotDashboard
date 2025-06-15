@@ -20,7 +20,7 @@ import {
   Play,
   Trash,
   Watch,
-  Ban
+  Ban,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -143,6 +143,15 @@ export const clientColumns: ColumnDef<ClientType>[] = [
     header: "Прізвище",
   },
   {
+    accessorKey: "city",
+    header: "Місто",
+    cell: ({ row }) => {
+      if (row.original.city) {
+        return row.original.city.name;
+      }
+    },
+  },
+  {
     accessorKey: "is_activated",
     header: "Верифікований?",
     cell: ({ row }) => {
@@ -162,13 +171,13 @@ export const clientColumns: ColumnDef<ClientType>[] = [
     header: "Користувач заблокував бота?",
     cell: ({ row }) => {
       return (
-          <p
-              className={clsx(
-                  !row.original.his_block_bot ? "text-green-700" : "text-red-700",
-              )}
-          >
-            {row.original.his_block_bot ? "Так" : "Ні"}
-          </p>
+        <p
+          className={clsx(
+            !row.original.his_block_bot ? "text-green-700" : "text-red-700",
+          )}
+        >
+          {row.original.his_block_bot ? "Так" : "Ні"}
+        </p>
       );
     },
   },
@@ -260,8 +269,8 @@ export const clientColumns: ColumnDef<ClientType>[] = [
                 Видалити
               </DropdownMenuItem>
               <DropdownMenuItem
-                  className="flex items-center gap-2 text-red-700"
-                  onClick={() => blockClient()}
+                className="flex items-center gap-2 text-red-700"
+                onClick={() => blockClient()}
               >
                 <Ban className="w-4 h-4" />
                 {row.original.is_blocked ? "Розблокувати" : "Заблокувати"}

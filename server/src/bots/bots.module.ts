@@ -18,6 +18,8 @@ import { MessageHandler } from './handlers/message.handler';
 import { ChatModule } from '../chat/chat.module';
 import { SendedListEntity } from '../messages/entities/sendedList.entity';
 import { MessageEntity } from '../messages/entities/message.entity';
+import { CityInfoHandler } from './handlers/city-info.handler';
+import { CityModule } from '../city/city.module';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { MessageEntity } from '../messages/entities/message.entity';
     MessagesModule,
     ButtonsModule,
     ChatModule,
+    CityModule,
   ],
   controllers: [BotsController],
   providers: [
@@ -41,6 +44,7 @@ import { MessageEntity } from '../messages/entities/message.entity';
     PollSceneName,
     CustomNameScene,
     MessageHandler,
+    CityInfoHandler,
   ],
   exports: [BotsService],
 })

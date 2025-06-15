@@ -1,10 +1,15 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientEntity } from './entities/client.entity';
 import { Like, Not, Repository, IsNull } from 'typeorm';
 import { ResultsEntity } from '../messages/entities/results.entity';
 import { ChatEntity } from '../chat/entities/chat.entity';
+import { CityService } from '../city/city.service';
 
 @Injectable()
 export class ClientService {
@@ -13,9 +18,9 @@ export class ClientService {
     private readonly clientRepository: Repository<ClientEntity>,
     @InjectRepository(ResultsEntity)
     private readonly resultsRepository: Repository<ResultsEntity>,
-
     @InjectRepository(ChatEntity)
     private readonly chatRepository: Repository<ChatEntity>,
+    private readonly cityService: CityService,
   ) {}
   async create(createClientDto: CreateClientDto) {
     return await this.clientRepository.save(createClientDto);
@@ -47,6 +52,9 @@ export class ClientService {
       where: {
         username: Like(`%${search ?? ''}%`),
         his_block_bot: showBlockedUsers,
+      },
+      relations: {
+        city: true,
       },
       take: per_page,
       skip: skip,
@@ -124,7 +132,13 @@ export class ClientService {
       throw new InternalServerErrorException(e);
     }
   }
+  async assignCity(clientId: number, cityId: number): Promise<ClientEntity> {
+    const client = await this.findOne(clientId);
+    const city = await this.cityService.findOne(cityId);
 
+    client.city = city;
+    return await this.clientRepository.save(client);
+  }
   async getAllClientsWithLastMessage(): Promise<ClientEntity[]> {
     const clients = await this.clientRepository.find({
       where: {
@@ -152,5 +166,33 @@ export class ClientService {
       { id: client_id },
       { last_message: message },
     );
+  }
+  async removeCity(clientId: number): Promise<ClientEntity> {
+    const client = await this.findOne(clientId);
+    client.city = null;
+    client.city_id = null;
+    return await this.clientRepository.save(client);
+  }
+
+  async findWithCity(id: number): Promise<ClientEntity> {
+    const client = await this.clientRepository.findOne({
+      where: { id },
+      relations: ['city'],
+    });
+
+    if (!client) {
+      throw new NotFoundException('Клієнт не знайдений');
+    }
+
+    return client;
+  }
+
+  async findByTelegramIdWithCity(telegramId: number): Promise<ClientEntity> {
+    const client = await this.clientRepository.findOne({
+      where: { telegram_id: telegramId },
+      relations: ['city'],
+    });
+
+    return client;
   }
 }

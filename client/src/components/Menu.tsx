@@ -9,7 +9,8 @@ import {
   SquarePlus,
   Users,
   Vote,
-  Menu as MenuIcon, // Import Menu icon
+  Menu as MenuIcon,
+  Building2, // Import Menu icon
 } from "lucide-react";
 import { useSocket } from "@/providers/socketProvider";
 import { useEffect, useState } from "react";
@@ -74,6 +75,14 @@ export default function Menu() {
               >
                 <Users className="h-4 w-4" />
                 Користувачі
+              </Link>
+              <Link
+                href="/i/dashboard/cities"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                onClick={toggleMenu}
+              >
+                <Building2 className="h-4 w-4" />
+                Міста
               </Link>
               <Link
                 href="/i/dashboard/polls"

@@ -13,6 +13,7 @@ import { MessagesModule } from './messages/messages.module';
 import { ChatModule } from './chat/chat.module';
 import { ButtonsModule } from './buttons/buttons.module';
 import { FilesModule } from './files/files.module';
+import { CityModule } from './city/city.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { FilesModule } from './files/files.module';
     MessagesModule,
     ChatModule,
     ButtonsModule,
+    CityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
