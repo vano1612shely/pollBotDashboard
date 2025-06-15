@@ -8,12 +8,9 @@ export class CityInfoHandler {
   constructor(private readonly clientService: ClientService) {}
 
   register(telegrafBot: Telegraf<IBotContext>) {
-    // Команда для перегляду поточного міста
-    telegrafBot.command('mycity', (ctx) => {
+    telegrafBot.command('my_city', (ctx) => {
       this.showCurrentCity(ctx);
     });
-
-    // Обробник кнопки "Моє місто"
     telegrafBot.action('my_city', (ctx) => {
       this.showCurrentCity(ctx);
     });

@@ -8,7 +8,7 @@ import { CreateBotDto } from './dto/create-bot.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BotEntity, BotStatus } from './entities/bot.entity';
 import { Repository } from 'typeorm';
-import { Scenes, session, Telegraf } from 'telegraf';
+import { Markup, Scenes, session, Telegraf } from 'telegraf';
 import { StartHandler } from './handlers/start.handler';
 import { VerifyHandler } from './handlers/verify.handler';
 import { customNameScene } from './scenes/custom_name.scene';
@@ -197,18 +197,24 @@ export class BotsService implements OnModuleInit {
                 await this.bot.telegram.sendAnimation(
                   user.telegram_id,
                   { url: message.message_img },
-                  { caption: parseText(message.message), ...buttons },
+                  {
+                    caption: `${parseText(message.message)}\n${user.is_activated ? `Ваше місто: ${user.city ? user.city.name : 'Не обрано'}` : ''}`,
+                    ...buttons,
+                  },
                 );
               } else if (message.message_img) {
                 await this.bot.telegram.sendPhoto(
                   user.telegram_id,
                   { url: message.message_img },
-                  { caption: parseText(message.message), ...buttons },
+                  {
+                    caption: `${parseText(message.message)}\n${user.is_activated ? `Ваше місто: ${user.city ? user.city.name : 'Не обрано'}` : ''}`,
+                    ...buttons,
+                  },
                 );
               } else {
                 await this.bot.telegram.sendMessage(
                   user.telegram_id,
-                  parseText(message.message),
+                  `${parseText(message.message)}\n${user.is_activated ? `Ваше місто: ${user.city ? user.city.name : 'Не обрано'}` : ''}`,
                   { parse_mode: 'HTML', ...buttons },
                 );
               }

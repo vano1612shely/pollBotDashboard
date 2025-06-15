@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Telegraf } from 'telegraf';
+import { Markup, Telegraf } from 'telegraf';
 import { ClientService } from '../../client/client.service';
 import { MessagesService } from '../../messages/messages.service';
 import { BotEntity } from '../entities/bot.entity';
@@ -25,7 +25,7 @@ export class PollHandler {
         poll,
       );
       const client = await this.clientService.findOneByTelegramId(ctx.from.id);
-      await this.messagesService.setActivity(client.id, message_id)
+      await this.messagesService.setActivity(client.id, message_id);
       const message = await this.messagesService.getById(Number(message_id));
       await ctx.telegram.sendMessage(
         bot.chat_id,
@@ -34,13 +34,26 @@ export class PollHandler {
           parse_mode: 'HTML',
         },
       );
+      const cityButton = Markup.button.callback(
+        '🏙️ Вибрати місто',
+        'select_city',
+      );
+      const keyboardButtons = [];
+      if (client.is_activated) keyboardButtons.push([cityButton]);
+      const newButtons = Markup.inlineKeyboard(keyboardButtons);
       if (message.thx_message && !client.is_blocked) {
-        if(message.thx_img && message.thx_img.endsWith('.gif')) {
-          await ctx.sendAnimation( { url: message.thx_img }, {caption: parseText(message.thx_message)})
-        } else if(message.thx_img) {
-          await ctx.sendPhoto( { url: message.thx_img }, {caption: parseText(message.thx_message)})
+        if (message.thx_img && message.thx_img.endsWith('.gif')) {
+          await ctx.sendAnimation(
+            { url: message.thx_img },
+            { caption: parseText(message.thx_message), ...newButtons },
+          );
+        } else if (message.thx_img) {
+          await ctx.sendPhoto(
+            { url: message.thx_img },
+            { caption: parseText(message.thx_message), ...newButtons },
+          );
         } else {
-          await ctx.reply(parseText(message.thx_message));
+          await ctx.reply(parseText(message.thx_message), { ...newButtons });
         }
       }
     });

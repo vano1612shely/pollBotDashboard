@@ -77,6 +77,9 @@ export class ClientService {
     if (typeof verified === 'boolean') {
       return await this.clientRepository.find({
         where: { is_activated: verified },
+        relations: {
+          city: true,
+        },
       });
     }
     return await this.clientRepository.find();
