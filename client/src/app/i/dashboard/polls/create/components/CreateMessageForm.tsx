@@ -42,7 +42,7 @@ import {
 import Link from "next/link";
 import CreateMessageButtons from "@/app/i/dashboard/polls/create/components/CreateMessageButtons";
 import fileService from "@/services/file.service";
-import {Upload} from "@/components/ui/upload";
+import { Upload } from "@/components/ui/upload";
 interface StartMessageProps {
   title: string;
   description: string;
@@ -74,7 +74,7 @@ export default function CreateMessageForm(props: StartMessageProps) {
   useEffect(() => {
     if (loadedImageForMessage) {
       form.setValue("message_img", loadedImageForMessage.full_link);
-      setImageForMsg(loadedImageForMessage.full_link)
+      setImageForMsg(loadedImageForMessage.full_link);
     }
   }, [loadedImageForMessage]);
   const {
@@ -88,7 +88,7 @@ export default function CreateMessageForm(props: StartMessageProps) {
   useEffect(() => {
     if (loadedImageForThx) {
       form.setValue("thx_img", loadedImageForThx.full_link);
-      setImageForThx(loadedImageForThx.full_link)
+      setImageForThx(loadedImageForThx.full_link);
     }
   }, [loadedImageForThx]);
   const [send, setSend] = useState<boolean>(false);
@@ -103,6 +103,7 @@ export default function CreateMessageForm(props: StartMessageProps) {
     },
   });
   const onSubmit = async (props: FormValues) => {
+    //@ts-expect-error
     mutate(props);
   };
   useEffect(() => {
@@ -183,66 +184,70 @@ export default function CreateMessageForm(props: StartMessageProps) {
               </div>
               <div className="grid gap-3">
                 <FormField
-                    control={form.control}
-                    name="message"
-                    render={({field}) => (
-                        <FormItem>
-                          <FormLabel>Повідомлення</FormLabel>
-                          <TextEditor
-                              content={field.value}
-                              setContent={field.onChange}
-                          />
-                          <FormMessage/>
-                        </FormItem>
-                    )}
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Повідомлення</FormLabel>
+                      <TextEditor
+                        content={field.value}
+                        setContent={field.onChange}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
                 <div className="grid gap-3">
-                  <Label htmlFor="image">Зображення або GIF для повідомлення</Label>
+                  <Label htmlFor="image">
+                    Зображення або GIF для повідомлення
+                  </Label>
                   <Upload
-                      imageUrl={imageFormMsg}
-                      onUpload={uploadImageForMessage}
-                      isPending={awaitImageForMessage}
+                    imageUrl={imageFormMsg}
+                    onUpload={uploadImageForMessage}
+                    isPending={awaitImageForMessage}
                   />
                 </div>
               </div>
             </div>
             <div className="grid gap-3 p-2">
               {/* @ts-ignore */}
-              <CreateMessageButtons form={form}/>
+              <CreateMessageButtons form={form} />
             </div>
             <div className="grid gap-3">
               <FormField
-                  control={form.control}
-                  name="thx_message"
-                  render={({field}) => (
-                      <FormItem>
-                        <FormLabel>Повідомлення після здійснення вибору</FormLabel>
-                        <TextEditor
-                            content={field.value || ""}
-                            setContent={field.onChange}
-                        />
-                        <FormMessage/>
-                      </FormItem>
-                  )}
+                control={form.control}
+                name="thx_message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Повідомлення після здійснення вибору</FormLabel>
+                    <TextEditor
+                      content={field.value || ""}
+                      setContent={field.onChange}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
               <div className="grid gap-3">
-                <Label htmlFor="image">Зображення або GIF після здійснення вибору</Label>
+                <Label htmlFor="image">
+                  Зображення або GIF після здійснення вибору
+                </Label>
                 <Upload
-                    imageUrl={imageForThx}
-                    onUpload={uploadImageForThx}
-                    isPending={awaitImageForThx}
+                  imageUrl={imageForThx}
+                  onUpload={uploadImageForThx}
+                  isPending={awaitImageForThx}
                 />
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex flex-wrap gap-2 justify-end w-full">
             <Button
-                className="bg-green-900 hover:bg-green-800"
-                type="submit"
-                disabled={isPending}
-                onClick={() => {
-                  setSend(true);
-                }}
+              className="bg-green-900 hover:bg-green-800"
+              type="submit"
+              disabled={isPending}
+              onClick={() => {
+                setSend(true);
+              }}
             >
               Зберегти та одразу відправити
             </Button>
