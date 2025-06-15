@@ -34,6 +34,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/app/i/dashboard/cities/components/confirmDialog";
+import { CityFormDialog } from "@/app/i/dashboard/cities/components/cityFormDialog";
 
 export function CityManagement() {
   const [cities, setCities] = useState<City[]>([]);
