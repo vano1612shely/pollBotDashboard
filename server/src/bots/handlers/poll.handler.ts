@@ -29,13 +29,13 @@ export class PollHandler {
       const message = await this.messagesService.getById(Number(message_id));
       await ctx.telegram.sendMessage(
         bot.chat_id,
-        `Нова відповідь:\nПовідомлення: ${message.name}\nКористувач: ${(client.custom_name ? client.custom_name : '') + ' @' + client.username}\nВибір: ${poll}`,
+        `Нова відповідь:\nПовідомлення: ${message.name}\nКористувач: ${(client.custom_name ? client.custom_name : '') + ' @' + client.username}\nМісто: ${client.city ? client.city.name : 'Не обране'}\nВибір: ${poll}`,
         {
           parse_mode: 'HTML',
         },
       );
       const cityButton = Markup.button.callback(
-        '🏙️ Вибрати місто',
+        client.city ? `🏙️ ${client.city.name}` : '🏙️ Вибрати місто',
         'select_city',
       );
       const keyboardButtons = [];

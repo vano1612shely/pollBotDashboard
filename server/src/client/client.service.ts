@@ -82,11 +82,14 @@ export class ClientService {
         },
       });
     }
-    return await this.clientRepository.find();
+    return await this.clientRepository.find({ relations: { city: true } });
   }
 
   async findOneByTelegramId(id: number) {
-    return await this.clientRepository.findOne({ where: { telegram_id: id } });
+    return await this.clientRepository.findOne({
+      where: { telegram_id: id },
+      relations: { city: true },
+    });
   }
 
   async setStatus(id: number, activate: boolean) {

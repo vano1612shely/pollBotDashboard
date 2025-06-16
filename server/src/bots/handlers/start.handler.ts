@@ -95,9 +95,9 @@ export class StartHandler {
 
       const text = parseText(message.message);
       const originalButtons = createInlineKeyboard(message.buttons, message.id);
-
+      console.log(subscriber);
       const cityButton = Markup.button.callback(
-        '🏙️ Вибрати місто',
+        subscriber.city ? `🏙️ ${subscriber.city.name}` : '🏙️ Вибрати місто',
         'select_city',
       );
 
