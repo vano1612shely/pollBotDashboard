@@ -49,6 +49,10 @@ class CityService {
     );
     return response.data;
   }
+  async findOne(id: number): Promise<City> {
+    const response = await api.get(`/cities/${id}`);
+    return response.data;
+  }
 }
 
 export const cityService = new CityService();

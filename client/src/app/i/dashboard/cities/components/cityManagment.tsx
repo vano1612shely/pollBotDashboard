@@ -36,6 +36,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/app/i/dashboard/cities/components/confirmDialog";
 import { CityFormDialog } from "@/app/i/dashboard/cities/components/cityFormDialog";
+import { ClientsListDialog } from "@/app/i/dashboard/cities/components/сlientsListDialog";
 
 export function CityManagement() {
   const [cities, setCities] = useState<City[]>([]);
@@ -172,7 +173,7 @@ export function CityManagement() {
                 {filteredCities.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={7}
+                      colSpan={4}
                       className="text-center text-muted-foreground"
                     >
                       Міста не знайдено
@@ -183,10 +184,18 @@ export function CityManagement() {
                     <TableRow key={city.id}>
                       <TableCell className="font-medium">{city.name}</TableCell>
                       <TableCell>
-                        <div className="flex items-center space-x-1">
-                          <UserCheck className="h-4 w-4 text-muted-foreground" />
-                          <span>{clientCounts[city.id] || 0}</span>
-                        </div>
+                        <ClientsListDialog
+                          cityId={city.id}
+                          cityName={city.name}
+                          clientsCount={clientCounts[city.id] || 0}
+                        >
+                          <button className="flex items-center space-x-1 text-left hover:text-blue-600 transition-colors">
+                            <UserCheck className="h-4 w-4 text-muted-foreground" />
+                            <span className="underline decoration-dotted">
+                              {clientCounts[city.id] || 0}
+                            </span>
+                          </button>
+                        </ClientsListDialog>
                       </TableCell>
                       <TableCell>
                         {new Date(city.created_at).toLocaleDateString("uk-UA")}
