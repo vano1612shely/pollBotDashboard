@@ -106,7 +106,7 @@ export function ClientsListDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Клієнти міста "{cityName}"
+            Клієнти міста {cityName}
             <Badge variant="secondary" className="ml-2">
               {clientsCount} клієнтів
             </Badge>
@@ -133,7 +133,9 @@ export function ClientsListDialog({
               <Table>
                 <TableHeader>
                   <TableRow>
+                    {/* eslint-disable-next-line react/no-unescaped-entities */}
                     <TableHead>Ім'я користувача</TableHead>
+                    {/* eslint-disable-next-line react/no-unescaped-entities */}
                     <TableHead>Повне ім'я</TableHead>
                     <TableHead>Статус</TableHead>
                     <TableHead>Дата реєстрації</TableHead>
