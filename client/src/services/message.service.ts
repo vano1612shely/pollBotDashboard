@@ -1,7 +1,5 @@
-import { api, apiClassic } from "@/services/api";
-import { BotType, CreateBot } from "@/types/bot.type";
+import { api } from "@/services/api";
 import { CreateMessage, Message, MessageType } from "@/types/message.type";
-import { ClientType } from "@/types/client.type";
 import { ResultType } from "@/types/result.type";
 
 class MessageService {

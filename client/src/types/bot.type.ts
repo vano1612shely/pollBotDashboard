@@ -1,6 +1,6 @@
 export type CreateBot = {
   token: string;
-  chat_id: string;
+  chat_ids: string[];
 };
 export enum BotStatus {
   ACTIVE = "Active",
@@ -9,7 +9,7 @@ export enum BotStatus {
 export type BotType = {
   id: number;
   token: string;
-  chat_id: string;
+  chat_ids: string[];
   user_id: number;
   status: BotStatus;
 };

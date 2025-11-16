@@ -1,4 +1,5 @@
 import { Markup } from 'telegraf';
+import { BotEntity } from '../entities/bot.entity';
 function isValidURL(url: string): boolean {
   const urlPattern = new RegExp(
     '^(https?:\\/\\/)?' + // протокол
@@ -44,4 +45,37 @@ export function parseText(msg: string): string {
   text = text.replaceAll('</p>', '');
   text = text.replaceAll('<br>', '\n');
   return text;
+}
+
+export function getAdminChatIds(bot: BotEntity): string[] {
+  if (!bot) return [];
+  // Prefer the new chat_ids collection but gracefully handle legacy chat_id values
+  const ids = (bot as any).chat_ids ?? (bot as any).chat_id ?? [];
+  if (Array.isArray(ids)) {
+    return ids.map((id) => `${id}`.trim()).filter((id) => id.length > 0);
+  }
+  if (typeof ids === 'string') {
+    return ids
+      .split(',')
+      .map((id) => id.trim())
+      .filter((id) => id.length > 0);
+  }
+  if (typeof ids === 'number') {
+    return [`${ids}`];
+  }
+  return [];
+}
+
+export async function broadcastToAdmins(
+  bot: BotEntity,
+  send: (chatId: string) => Promise<unknown>,
+) {
+  const adminChatIds = getAdminChatIds(bot);
+  await Promise.all(
+    adminChatIds.map((chatId) =>
+      send(chatId).catch((e) =>
+        console.log(`Cant send message for admin ${chatId}:`, e),
+      ),
+    ),
+  );
 }

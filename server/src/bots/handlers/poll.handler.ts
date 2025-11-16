@@ -4,7 +4,7 @@ import { ClientService } from '../../client/client.service';
 import { MessagesService } from '../../messages/messages.service';
 import { BotEntity } from '../entities/bot.entity';
 import { IBotContext } from '../context';
-import { parseText } from './lib';
+import { broadcastToAdmins, parseText } from './lib';
 
 @Injectable()
 export class PollHandler {
@@ -27,12 +27,18 @@ export class PollHandler {
       const client = await this.clientService.findOneByTelegramId(ctx.from.id);
       await this.messagesService.setActivity(client.id, message_id);
       const message = await this.messagesService.getById(Number(message_id));
-      await ctx.telegram.sendMessage(
-        bot.chat_id,
-        `Нова відповідь:\nПовідомлення: ${message.name}\nКористувач: ${(client.custom_name ? client.custom_name : '') + ' @' + client.username}\nМісто: ${client.city ? client.city.name : 'Не обране'}\nВибір: ${poll}`,
-        {
-          parse_mode: 'HTML',
-        },
+      await broadcastToAdmins(bot, (chatId) =>
+        ctx.telegram.sendMessage(
+          chatId,
+          `Результат опитування:
+Опитування: ${message.name}
+Користувач: ${(client.custom_name ? client.custom_name : '') + ' @' + client.username}
+Місто: ${client.city ? client.city.name : 'Не вказано'}
+Відповідь: ${poll}`,
+          {
+            parse_mode: 'HTML',
+          },
+        ),
       );
       const cityButton = Markup.button.callback(
         client.city ? `🏙️ ${client.city.name}` : '🏙️ Вибрати місто',

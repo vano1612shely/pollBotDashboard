@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import BotService from "@/services/bot.service";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -21,7 +21,6 @@ export default function TokenBlock() {
   const {
     mutateAsync,
     error: createError,
-    data: createData,
   } = useMutation({
     mutationKey: ["createUpdateBot"],
     mutationFn: (data: CreateBot) => BotService.createOrUpdate(data),
@@ -29,20 +28,33 @@ export default function TokenBlock() {
   const bot = useBotStore((state) => state.bot);
   const [data, setData] = useState<CreateBot>({
     token: "",
-    chat_id: "",
+    chat_ids: [],
   });
+  const [chatIdsInput, setChatIdsInput] = useState("");
+
+  const normalizeChatIds = (value: string) =>
+    value
+      .split(/[,\\s]+/)
+      .map((id) => id.trim())
+      .filter((id) => id.length);
+
   useEffect(() => {
     if (createError) {
       toast.error(errorCatch(createError));
     }
   }, [createError]);
+
   useEffect(() => {
-    if (bot) setData({ chat_id: bot.chat_id, token: bot.token });
+    if (bot) {
+      setData({ chat_ids: bot.chat_ids ?? [], token: bot.token });
+      setChatIdsInput((bot.chat_ids ?? []).join(", "));
+    }
   }, [bot]);
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Токен бота та чат:</CardTitle>
+        <CardTitle>Налаштування бота:</CardTitle>
       </CardHeader>
       <CardContent>
         <form className="flex flex-col gap-3">
@@ -50,18 +62,26 @@ export default function TokenBlock() {
             <Label htmlFor="token">Токен бота</Label>
             <Input
               id="token"
-              placeholder="токен бота:"
+              placeholder="Введіть токен"
               value={data.token}
               onChange={(e) => setData({ ...data, token: e.target.value })}
             />
           </div>
           <div>
-            <Label htmlFor="chat_id">Id чату</Label>
+            <Label htmlFor="chat_id">
+              ID чатів адмінів (через кому або пробіл)
+            </Label>
             <Input
               id="chat_id"
-              placeholder="Id чату:"
-              value={data.chat_id}
-              onChange={(e) => setData({ ...data, chat_id: e.target.value })}
+              placeholder="Наприклад: 12345, 67890"
+              value={chatIdsInput}
+              onChange={(e) => {
+                setChatIdsInput(e.target.value);
+                setData({
+                  ...data,
+                  chat_ids: normalizeChatIds(e.target.value),
+                });
+              }}
             />
           </div>
         </form>
@@ -70,11 +90,14 @@ export default function TokenBlock() {
         <Button
           onClick={() => {
             toast.promise(
-              mutateAsync({ token: data.token, chat_id: data.chat_id }),
+              mutateAsync({
+                token: data.token,
+                chat_ids: normalizeChatIds(chatIdsInput),
+              }),
               {
-                loading: "Збереження...",
+                loading: "Зберігаємо...",
                 success: <b>Збережено</b>,
-                error: <b>Помилка</b>,
+                error: <b>Сталася помилка</b>,
               },
             );
           }}

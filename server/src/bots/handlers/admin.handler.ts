@@ -6,7 +6,7 @@ import {
   MessageEntity,
   MessageType,
 } from '../../messages/entities/message.entity';
-import { createInlineKeyboard, parseText } from './lib';
+import { createInlineKeyboard, getAdminChatIds, parseText } from './lib';
 import { BotEntity } from '../entities/bot.entity';
 import { IBotContext } from '../context';
 
@@ -18,7 +18,8 @@ export class AdminHandler {
   ) {}
   register(telegrafBot: Telegraf<IBotContext>, bot: BotEntity) {
     telegrafBot.command('admin', (ctx) => {
-      if (Number(bot.chat_id) === ctx.from.id) {
+      const adminChatIds = getAdminChatIds(bot);
+      if (adminChatIds.includes(String(ctx.from.id))) {
         this.execute(ctx, bot);
       }
     });

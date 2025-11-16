@@ -19,8 +19,36 @@ export class BotEntity {
   @Column({ nullable: true })
   token: string;
 
-  @Column({ nullable: true })
-  chat_id: string;
+  @Column({
+    name: 'chat_id',
+    type: 'text',
+    nullable: true,
+    transformer: {
+      to: (value?: string[]) =>
+        Array.isArray(value) && value.length ? JSON.stringify(value) : null,
+      from: (value?: string | null) => {
+        if (!value) return [];
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) {
+            return parsed
+              .map((id) => `${id}`.trim())
+              .filter((id) => id.length > 0);
+          }
+        } catch (e) {
+          // fall through
+        }
+        if (typeof value === 'string') {
+          return value
+            .split(',')
+            .map((id) => id.trim())
+            .filter((id) => id.length > 0);
+        }
+        return [];
+      },
+    },
+  })
+  chat_ids: string[];
 
   @Column()
   user_id: number;
