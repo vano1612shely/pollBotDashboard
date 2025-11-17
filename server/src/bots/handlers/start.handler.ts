@@ -24,23 +24,18 @@ export class StartHandler {
       this.execute(ctx, bot);
     });
 
-    // РћР±СЂРѕР±РЅРёРє РґР»СЏ РєРЅРѕРїРєРё "Р’РёР±СЂР°С‚Рё РјС–СЃС‚Рѕ"
     telegrafBot.action('select_city', (ctx) => {
       this.showCitySelection(ctx, 0);
     });
 
-    // РћР±СЂРѕР±РЅРёРє РїР°РіС–РЅР°С†С–С— РјС–СЃС‚
     telegrafBot.action(/city_page:(\d+)/, (ctx) => {
       const page = parseInt(ctx.match[1]);
       this.showCitySelection(ctx, page);
     });
-
-    // РћР±СЂРѕР±РЅРёРє РІРёР±РѕСЂСѓ РјС–СЃС‚Р°
     telegrafBot.action(/select_city:(\d+)/, (ctx) => {
       this.assignCityToUser(ctx, parseInt(ctx.match[1]));
     });
 
-    // РћР±СЂРѕР±РЅРёРє РїРѕРІРµСЂРЅРµРЅРЅСЏ РґРѕ СЃС‚Р°СЂС‚РѕРІРѕРіРѕ РјРµРЅСЋ
     telegrafBot.action('back_to_start', (ctx) => {
       this.execute(ctx, bot);
     });
@@ -99,11 +94,10 @@ ${subscriber.first_name} ${subscriber.last_name}`,
       const originalButtons = createInlineKeyboard(message.buttons, message.id);
       console.log(subscriber);
       const cityButton = Markup.button.callback(
-        subscriber.city ? `рџЏ™пёЏ ${subscriber.city.name}` : 'рџЏ™пёЏ Р’РёР±СЂР°С‚Рё РјС–СЃС‚Рѕ',
+        subscriber.city ? `🏙️ ${subscriber.city.name}` : '🏙️ Вибрати місто',
         'select_city',
       );
 
-      // РЎС‚РІРѕСЂСЋС”РјРѕ РЅРѕРІСѓ РєР»Р°РІС–Р°С‚СѓСЂСѓ Р· РґРѕРґР°С‚РєРѕРІРѕСЋ РєРЅРѕРїРєРѕСЋ
       let keyboardButtons = [];
       if (
         originalButtons &&
@@ -145,15 +139,14 @@ ${subscriber.first_name} ${subscriber.last_name}`,
 
   async showCitySelection(ctx: Context, page: number = 0) {
     try {
-      // РћС‚СЂРёРјСѓС”РјРѕ Р°РєС‚РёРІРЅС– РјС–СЃС‚Р°
       const cities = await this.cityService.findAll();
 
       if (cities.length === 0) {
         await ctx.editMessageText(
-          'вќЊ РќР°СЂР°Р·С– РЅРµРјР°С” РґРѕСЃС‚СѓРїРЅРёС… РјС–СЃС‚ РґР»СЏ РІРёР±РѕСЂСѓ.',
+          '❌ Наразі немає доступних міст для вибору.',
           {
             ...Markup.inlineKeyboard([
-              Markup.button.callback('рџ”™ РџРѕРІРµСЂРЅСѓС‚РёСЃСЏ', 'back_to_start'),
+              Markup.button.callback('🔙 Повернутися', 'back_to_start'),
             ]),
           },
         );
@@ -168,21 +161,18 @@ ${subscriber.first_name} ${subscriber.last_name}`,
       const endIndex = startIndex + CITIES_PER_PAGE;
       const citiesOnPage = cities.slice(startIndex, endIndex);
 
-      // РЎС‚РІРѕСЂСЋС”РјРѕ РєРЅРѕРїРєРё РґР»СЏ РјС–СЃС‚
       const cityButtons = citiesOnPage.map((city) =>
         Markup.button.callback(`${city.name}`, `select_city:${city.id}`),
       );
 
-      // Р РѕР·РјС–С‰СѓС”РјРѕ РєРЅРѕРїРєРё РїРѕ РѕРґРЅС–Р№ РІ СЂСЏРґСѓ
       const keyboard = cityButtons.map((button) => [button]);
 
-      // Р”РѕРґР°С”РјРѕ РЅР°РІС–РіР°С†С–Р№РЅС– РєРЅРѕРїРєРё
       const navigationButtons = [];
 
       if (currentPage > 0) {
         navigationButtons.push(
           Markup.button.callback(
-            'в¬…пёЏ РџРѕРїРµСЂРµРґРЅСЏ',
+            '⬅️ Попередня',
             `city_page:${currentPage - 1}`,
           ),
         );
@@ -190,7 +180,7 @@ ${subscriber.first_name} ${subscriber.last_name}`,
 
       if (currentPage < totalPages - 1) {
         navigationButtons.push(
-          Markup.button.callback('РќР°СЃС‚СѓРїРЅР° вћЎпёЏ', `city_page:${currentPage + 1}`),
+          Markup.button.callback('Наступна ➡️', `city_page:${currentPage + 1}`),
         );
       }
 
@@ -198,12 +188,10 @@ ${subscriber.first_name} ${subscriber.last_name}`,
         keyboard.push(navigationButtons);
       }
 
-      // Р”РѕРґР°С”РјРѕ РєРЅРѕРїРєСѓ РїРѕРІРµСЂРЅРµРЅРЅСЏ
       keyboard.push([
-        Markup.button.callback('рџ”™ РџРѕРІРµСЂРЅСѓС‚РёСЃСЏ', 'back_to_start'),
+        Markup.button.callback('🔙 Повернутися', 'back_to_start'),
       ]);
-
-      const text = `рџЏ™пёЏ <b>Р’РёР±РµСЂС–С‚СЊ РІР°С€Рµ РјС–СЃС‚Рѕ:</b>\n\nРЎС‚РѕСЂС–РЅРєР° ${currentPage + 1} Р· ${totalPages}\nР’СЃСЊРѕРіРѕ РјС–СЃС‚: ${cities.length}`;
+      const text = `🏙️ <b>Виберіть ваше місто:</b>\n\nСторінка ${currentPage + 1} з ${totalPages}\nВсього міст: ${cities.length}`;
 
       await ctx.editMessageText(text, {
         parse_mode: 'HTML',
@@ -211,9 +199,9 @@ ${subscriber.first_name} ${subscriber.last_name}`,
       });
     } catch (error) {
       console.error('Error in showCitySelection:', error);
-      await ctx.editMessageText('вќЊ Р’РёРЅРёРєР»Р° РїРѕРјРёР»РєР° РїСЂРё Р·Р°РІР°РЅС‚Р°Р¶РµРЅРЅС– РјС–СЃС‚.', {
+      await ctx.editMessageText('❌ Виникла помилка при завантаженні міст.', {
         ...Markup.inlineKeyboard([
-          Markup.button.callback('рџ”™ РџРѕРІРµСЂРЅСѓС‚РёСЃСЏ', 'back_to_start'),
+          Markup.button.callback('🔙 Повернутися', 'back_to_start'),
         ]),
       });
     }
@@ -225,40 +213,40 @@ ${subscriber.first_name} ${subscriber.last_name}`,
         ctx.from.id,
       );
       if (!subscriber) {
-        await ctx.answerCbQuery('вќЊ РљРѕСЂРёСЃС‚СѓРІР°С‡ РЅРµ Р·РЅР°Р№РґРµРЅРёР№');
+        await ctx.answerCbQuery('❌ Користувач не знайдений');
         return;
       }
 
       const city = await this.cityService.findOne(cityId);
       if (!city) {
-        await ctx.answerCbQuery('вќЊ РњС–СЃС‚Рѕ РЅРµ Р·РЅР°Р№РґРµРЅРѕ');
+        await ctx.answerCbQuery('❌ Місто не знайдено');
         return;
       }
 
       await this.clientService.assignCity(subscriber.id, cityId);
 
-      const successText = `вњ… <b>РњС–СЃС‚Рѕ СѓСЃРїС–С€РЅРѕ РѕР±СЂР°РЅРѕ!</b>\n\nрџЏ™пёЏ Р’Р°С€Рµ РјС–СЃС‚Рѕ: <b>${city.name}</b>`;
+      const successText = `✅ <b>Місто успішно обрано!</b>\n\n🏙️ Ваше місто: <b>${city.name}</b>`;
 
       await ctx.editMessageText(successText, {
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('рџЏ™пёЏ Р—РјС–РЅРёС‚Рё РјС–СЃС‚Рѕ', 'select_city')],
-          [Markup.button.callback('рџЏ  Р“РѕР»РѕРІРЅРµ РјРµРЅСЋ', 'back_to_start')],
+          [Markup.button.callback('🏙️ Змінити місто', 'select_city')],
+          [Markup.button.callback('🏠 Головне меню', 'back_to_start')],
         ]),
       });
 
-      // РџРѕРєР°Р·СѓС”РјРѕ РїС–РґС‚РІРµСЂРґР¶РµРЅРЅСЏ
-      await ctx.answerCbQuery(`вњ… РњС–СЃС‚Рѕ ${city.name} РѕР±СЂР°РЅРѕ!`);
+
+      await ctx.answerCbQuery(`✅ Місто ${city.name} обрано!`);
     } catch (error) {
       console.error('Error in assignCityToUser:', error);
-      await ctx.answerCbQuery('вќЊ Р’РёРЅРёРєР»Р° РїРѕРјРёР»РєР° РїСЂРё РІРёР±РѕСЂС– РјС–СЃС‚Р°');
+      await ctx.answerCbQuery('❌ Виникла помилка при виборі міста');
 
       await ctx.editMessageText(
-        'вќЊ Р’РёРЅРёРєР»Р° РїРѕРјРёР»РєР° РїСЂРё РІРёР±РѕСЂС– РјС–СЃС‚Р°. РЎРїСЂРѕР±СѓР№С‚Рµ С‰Рµ СЂР°Р·.',
+        '❌ Виникла помилка при виборі міста. Спробуйте ще раз.',
         {
           ...Markup.inlineKeyboard([
-            [Markup.button.callback('рџЏ™пёЏ РЎРїСЂРѕР±СѓРІР°С‚Рё Р·РЅРѕРІСѓ', 'select_city')],
-            [Markup.button.callback('рџ”™ РџРѕРІРµСЂРЅСѓС‚РёСЃСЏ', 'back_to_start')],
+            [Markup.button.callback('🏙️ Спробувати знову', 'select_city')],
+            [Markup.button.callback('🔙 Повернутися', 'back_to_start')],
           ]),
         },
       );
