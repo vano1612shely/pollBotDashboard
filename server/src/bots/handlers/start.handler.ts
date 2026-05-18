@@ -70,10 +70,12 @@ export class StartHandler {
 ${subscriber.first_name} ${subscriber.last_name}`,
           {
             ...Markup.inlineKeyboard([
-              Markup.button.callback('Підтвердити',
+              Markup.button.callback(
+                'Підтвердити',
                 `verify:${subscriber.telegram_id}`,
               ),
-              Markup.button.callback("Змінити ім'я",
+              Markup.button.callback(
+                "Змінити ім'я",
                 `custom_name:${subscriber.telegram_id}`,
               ),
             ]),
@@ -92,7 +94,6 @@ ${subscriber.first_name} ${subscriber.last_name}`,
 
       const text = parseText(message.message);
       const originalButtons = createInlineKeyboard(message.buttons, message.id);
-      console.log(subscriber);
       const cityButton = Markup.button.callback(
         subscriber.city ? `🏙️ ${subscriber.city.name}` : '🏙️ Вибрати місто',
         'select_city',
@@ -235,7 +236,6 @@ ${subscriber.first_name} ${subscriber.last_name}`,
         ]),
       });
 
-
       await ctx.answerCbQuery(`✅ Місто ${city.name} обрано!`);
     } catch (error) {
       console.error('Error in assignCityToUser:', error);
@@ -253,4 +253,3 @@ ${subscriber.first_name} ${subscriber.last_name}`,
     }
   }
 }
-

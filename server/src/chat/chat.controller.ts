@@ -18,7 +18,6 @@ export class ChatController {
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   async create(@Body() data: CreateChatMessageDto) {
-    console.log(data);
     return await this.chatService.create(data);
   }
 

@@ -37,7 +37,6 @@ export class PollSceneName {
         await ctx.reply('Назва не може бути пустою, спробуйте ще раз: ');
         return;
       }
-      console.log(ctx.message.text);
       ctx.session.name = ctx.message.text;
       await ctx.scene.enter('send_poll');
     });

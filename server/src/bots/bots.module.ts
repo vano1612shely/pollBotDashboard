@@ -20,6 +20,7 @@ import { SendedListEntity } from '../messages/entities/sendedList.entity';
 import { MessageEntity } from '../messages/entities/message.entity';
 import { CityInfoHandler } from './handlers/city-info.handler';
 import { CityModule } from '../city/city.module';
+import { TelegramUserSyncMiddleware } from './telegram-user.middleware';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { CityModule } from '../city/city.module';
     CustomNameScene,
     MessageHandler,
     CityInfoHandler,
+    TelegramUserSyncMiddleware,
   ],
   exports: [BotsService],
 })

@@ -201,4 +201,31 @@ export class ClientService {
 
     return client;
   }
+
+  async syncTelegramData(from: any) {
+    await this.clientRepository
+      .createQueryBuilder()
+      .update(ClientEntity)
+      .set({
+        username: from.username ?? null,
+        first_name: from.first_name ?? null,
+        last_name: from.last_name ?? null,
+      })
+      .where('telegram_id = :telegramId', {
+        telegramId: from.id,
+      })
+      .andWhere(
+        `
+      username IS DISTINCT FROM :username
+      OR first_name IS DISTINCT FROM :firstName
+      OR last_name IS DISTINCT FROM :lastName
+      `,
+        {
+          username: from.username ?? null,
+          firstName: from.first_name ?? null,
+          lastName: from.last_name ?? null,
+        },
+      )
+      .execute();
+  }
 }

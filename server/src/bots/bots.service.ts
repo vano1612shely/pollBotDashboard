@@ -8,7 +8,7 @@ import { CreateBotDto } from './dto/create-bot.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BotEntity, BotStatus } from './entities/bot.entity';
 import { Repository } from 'typeorm';
-import { Markup, Scenes, session, Telegraf } from 'telegraf';
+import { Scenes, session, Telegraf } from 'telegraf';
 import { StartHandler } from './handlers/start.handler';
 import { VerifyHandler } from './handlers/verify.handler';
 import { customNameScene } from './scenes/custom_name.scene';
@@ -28,6 +28,8 @@ import { pollScene, pollScene2, pollSceneName } from './scenes/poll.scene';
 import { MessageHandler } from './handlers/message.handler';
 import axios from 'axios';
 import { SendedListEntity } from '../messages/entities/sendedList.entity';
+import { TelegramUserSyncMiddleware } from './telegram-user.middleware';
+
 @Injectable()
 export class BotsService implements OnModuleInit {
   bot: Telegraf<IBotContext> | null = null;
@@ -46,6 +48,8 @@ export class BotsService implements OnModuleInit {
     private readonly pollHandler: PollHandler,
     private readonly adminHandler: AdminHandler,
     private readonly messageHandler: MessageHandler,
+
+    private readonly telegramUserSyncMiddleware: TelegramUserSyncMiddleware,
   ) {}
 
   async onModuleInit() {
@@ -63,6 +67,11 @@ export class BotsService implements OnModuleInit {
     try {
       this.bot = new Telegraf<IBotContext>(bot.token);
       this.bot_id = bot.id;
+      this.bot.use(
+        this.telegramUserSyncMiddleware.use.bind(
+          this.telegramUserSyncMiddleware,
+        ),
+      );
       const stage = new Scenes.Stage<IBotContext>([
         customNameScene,
         sendMessageScene,
