@@ -32,7 +32,7 @@ export class PollHandler {
           chatId,
           `Результат опитування:
 Опитування: ${message.name}
-Користувач: ${(client.custom_name ? client.custom_name : '') + (client.username ? ` @${client.username}` : '(username не вказано)')}
+Користувач: ${(client.custom_name ? client.custom_name : `${client?.first_name} ${client?.last_name}`) + (client.username ? ` @${client.username}` : '(username не вказано)')}
 Місто: ${client.city ? client.city.name : 'Не вказано'}
 Відповідь: ${poll}`,
           {
