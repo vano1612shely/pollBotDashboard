@@ -8,9 +8,10 @@ export class TelegramUserSyncMiddleware {
 
   async use(ctx: Context, next: () => Promise<void>) {
     if (ctx.from) {
+      console.log('before sync');
       await this.clientService.syncTelegramData(ctx.from);
     }
-
+    console.log('after sync');
     return next();
   }
 }
