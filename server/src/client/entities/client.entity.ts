@@ -34,7 +34,7 @@ export class ClientEntity {
   @Column({ nullable: true })
   custom_name: string;
 
-  @Column({ unique: true })
+  @Column({ nullable: true })
   username: string;
 
   @Column({ nullable: true })
