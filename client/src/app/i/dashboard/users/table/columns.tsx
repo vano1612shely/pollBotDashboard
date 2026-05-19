@@ -124,23 +124,38 @@ export const clientColumns: ColumnDef<ClientType>[] = [
     accessorKey: "username",
     header: "Username",
     cell: ({ row }) => {
-      return (
-        <Link
-          href={`https:/t.me/${row.original.username}`}
-          className="text-blue-500 hover:underline"
-        >
-          @{row.original.username}
-        </Link>
-      );
+      if(row.original.username) {
+        return (
+            <Link
+                href={`https:/t.me/${row.original.username}`}
+                className="text-blue-500 hover:underline"
+            >
+              @{row.original.username}
+            </Link>
+        );
+      }
+      return 'Не вказано'
     },
   },
   {
     accessorKey: "first_name",
     header: "Ім'я",
+    cell: ({ row }) => {
+      if(row.original.first_name) {
+        return row.original.first_name;
+      }
+      return 'Не вказано'
+    },
   },
   {
     accessorKey: "last_name",
     header: "Прізвище",
+    cell: ({ row }) => {
+      if(row.original.last_name) {
+        return row.original.last_name;
+      }
+      return 'Не вказано'
+    },
   },
   {
     accessorKey: "city",

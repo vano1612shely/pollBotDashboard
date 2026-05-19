@@ -111,7 +111,7 @@ export default function Chat({ client_id }: { client_id?: number | null }) {
   return (
     <div className="w-full flex border rounded-lg flex-col p-2 h-[800px]">
       <div className="w-full rounded border p-3 mb-5 flex justify-between items-center">
-        {client?.username}
+        {client?.username || client?.telegram_id}
         {client && <Button variant="destructive" onClick={() => deleteChat(client.id)}>Видалити чат</Button>}
       </div>
       <div className="flex-1 flex flex-col gap-2 overflow-y-scroll">

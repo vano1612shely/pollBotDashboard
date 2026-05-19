@@ -59,10 +59,7 @@ export default function ChatsList({
       />
       <ul className="w-full h-full">
         {usersList.map((client, index) => {
-          if (
-            client.username.includes(search.replace("@", "")) ||
-            client.custom_name?.includes(search)
-          )
+          if (client.custom_name?.includes(search) || (client.username && client.username.includes(search.replace("@", ""))))
             return (
               <li key={index}>
                 <Link
@@ -91,7 +88,7 @@ export default function ChatsList({
                   <div>
                     <p className="font-semibold text-md flex gap-2 leading-0">
                       <span>{client.custom_name}</span>{" "}
-                      <span>@{client.username}</span>
+                      <span>@{client?.username || client?.telegram_id}</span>
                     </p>
                     <div className="pl-2 text-muted-foreground flex gap-2 items-center leading-0">
                       {client.last_message &&
