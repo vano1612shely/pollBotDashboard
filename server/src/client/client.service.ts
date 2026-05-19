@@ -45,22 +45,38 @@ export class ClientService {
     showBlockedUsers: boolean | null = null,
   ): Promise<{ count: number; data: ClientEntity[] }> {
     const skip = (page - 1) * per_page;
+
+    const where: any = {};
+
+    if (search?.trim()) {
+      where.username = Like(`%${search}%`);
+    }
+
+    if (showBlockedUsers !== null) {
+      where.his_block_bot = showBlockedUsers;
+    }
+
     const count = await this.clientRepository.count({
-      where: {},
+      where,
     });
+
     const subscribers = await this.clientRepository.find({
-      where: {
-        username: Like(`%${search ?? ''}%`),
-        his_block_bot: showBlockedUsers,
-      },
+      where,
       relations: {
         city: true,
       },
       take: per_page,
-      skip: skip,
-      order: { created_at: 'desc', id: 'asc' },
+      skip,
+      order: {
+        created_at: 'desc',
+        id: 'asc',
+      },
     });
-    return { count: count, data: subscribers };
+
+    return {
+      count,
+      data: subscribers,
+    };
   }
 
   async findOne(id: number) {
