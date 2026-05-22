@@ -22,7 +22,7 @@ export class CityInfoHandler {
         ctx.from.id,
       );
 
-      if (!subscriber) {
+      if (!subscriber || subscriber.is_blocked) {
         await ctx.reply('❌ Користувач не знайдений');
         return;
       }

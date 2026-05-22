@@ -29,6 +29,7 @@ import { MessageHandler } from './handlers/message.handler';
 import axios from 'axios';
 import { SendedListEntity } from '../messages/entities/sendedList.entity';
 import { TelegramUserSyncMiddleware } from './telegram-user.middleware';
+import { TelegramBlockedMiddleware } from './telegram-blocked.middleware';
 
 @Injectable()
 export class BotsService implements OnModuleInit {
@@ -50,6 +51,7 @@ export class BotsService implements OnModuleInit {
     private readonly messageHandler: MessageHandler,
 
     private readonly telegramUserSyncMiddleware: TelegramUserSyncMiddleware,
+    private readonly telegramBlockedMiddleware: TelegramBlockedMiddleware,
   ) {}
 
   async onModuleInit() {
@@ -71,6 +73,9 @@ export class BotsService implements OnModuleInit {
         this.telegramUserSyncMiddleware.use.bind(
           this.telegramUserSyncMiddleware,
         ),
+      );
+      this.bot.use(
+        this.telegramBlockedMiddleware.use.bind(this.telegramBlockedMiddleware),
       );
       const stage = new Scenes.Stage<IBotContext>([
         customNameScene,

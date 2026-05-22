@@ -21,6 +21,7 @@ import { MessageEntity } from '../messages/entities/message.entity';
 import { CityInfoHandler } from './handlers/city-info.handler';
 import { CityModule } from '../city/city.module';
 import { TelegramUserSyncMiddleware } from './telegram-user.middleware';
+import { TelegramBlockedMiddleware } from './telegram-blocked.middleware';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { TelegramUserSyncMiddleware } from './telegram-user.middleware';
     MessageHandler,
     CityInfoHandler,
     TelegramUserSyncMiddleware,
+    TelegramBlockedMiddleware,
   ],
   exports: [BotsService],
 })
